@@ -87,9 +87,37 @@ Ask about contested things and about their business; find out the rest yourself.
 
 ---
 
-## Phase 1: Search (cheap; a script, not a model)
+## Phase 1: Search (cheap; scripts, not a model)
 
-The scripts live in `bin/` next to this file.
+The scripts live in `bin/` next to this file. Three kinds of search, in this order:
+
+**1a. Pattern search: who models it this way?** This is the highest-value search
+and the one nobody does. Instead of finding projects by topic and hoping their
+schemas are relevant, search code content for the decision itself:
+
+```
+bin/pattern-search.sh -l                        # library of patterns per decision
+bin/pattern-search.sh -d identity               # every pattern for one decision
+bin/pattern-search.sh membership-table-prisma   # one pattern
+bin/pattern-search.sh -q 'model Membership \{[^}]*role file:schema\.prisma patterntype:regexp'
+```
+
+Engine `sourcegraph` (default): regex across GitHub, GitLab and more, ranked by
+stars, no auth. Engine `github`: keyword + `filename:`/`extension:`, needs `gh`,
+sampled by relevance not stars, so treat its counts as a floor. Output: repos
+matching each pattern with `path:line` and a snippet. **A high count is
+convergence evidence on its own**, and the top-starred matches are finalist
+candidates you would never have found by topic. Add patterns to
+`references/patterns.tsv` when you discover a query that isolates a decision.
+
+**1b. Votes that are not repositories.** Read `references/sources.md`. Standards
+(SCIM, OneRoster, FHIR, iCalendar, ISO 20022), commercial API schemas (APIs.guru,
+the incumbents' API references), widely used libraries (registries, by downloads),
+and reference monoliths (GitLab, Discourse, Zulip, Chatwoot, Odoo, Keycloak) all
+count as votes. A standard weighs like a mature incumbent. Say in the matrix which
+kind of vote each column is.
+
+**1c. Repo search: what projects exist in the category?**
 
 ```
 bin/prior-art-search.sh -n 20 -s 200 -k "kw1|kw2|kw3" \
@@ -102,6 +130,10 @@ bin/prior-art-search.sh -n 20 -s 200 -k "kw1|kw2|kw3" \
 - GitHub AND-s every word in a query, so **long phrases destroy recall**. Use several
   short queries plus 2-4 `topic:` slugs, which are the highest-recall form. Avoid
   audience topics (`topic:education`, `topic:business`), they return tutorials, not systems.
+- `-S github,gitlab,codeberg` adds other hosts. GitLab and Codeberg star counts run
+  ~10x lower than GitHub for equivalent projects, so the script lowers their floor;
+  expect them to contribute a few percent of candidates, occasionally the only copy
+  of an EU or academic project.
 - Output: markdown + JSON in `./docs/prior-art/` inside the current repo (override with `-o` or `PRIOR_ART_OUT`).
 
 **Name the incumbents before you search.** The biggest projects in a category

@@ -1,10 +1,23 @@
 {
   "name": "prior-art",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "description": "Survey how mature open-source projects solved your problem before you build it. Greenfield: a foundation with a citation per decision. Brownfield: where your existing app diverges from what independent projects converged on, ranked by cost to reverse.",
-  "author": { "name": "Doug Kvamme" },
+  "author": {
+    "name": "Doug Kvamme"
+  },
   "homepage": "https://github.com/kvadou/prior-art",
   "repository": "https://github.com/kvadou/prior-art",
   "license": "MIT",
-  "keywords": ["architecture", "schema", "research", "open-source", "prior-art", "design-review", "greenfield", "brownfield", "multi-tenant", "data-model"]
+  "keywords": [
+    "architecture",
+    "schema",
+    "research",
+    "open-source",
+    "prior-art",
+    "design-review",
+    "greenfield",
+    "brownfield",
+    "multi-tenant",
+    "data-model"
+  ]
 }

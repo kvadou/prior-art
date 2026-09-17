@@ -43,7 +43,8 @@ Claude Code:
 
 Codex: clone and symlink `skills/prior-art` into `~/.agents/skills/`.
 
-Requirements: `gh` (authenticated), `jq`, `git`. macOS and Linux.
+Requirements: `gh` (authenticated), `jq`, `git`, `curl`. macOS and Linux. Pattern
+search via Sourcegraph needs no account.
 
 ## Run
 
@@ -61,10 +62,20 @@ brownfield mode they are about what the fingerprint of your schema already expos
 
 Then, with your answers and a budget in hand:
 
-1. **Search** (a shell script, near-zero tokens): GitHub topic and phrase queries,
-   scored on relevance, maintenance, and license class. Plus a step most tools skip:
-   the incumbents in any category (Canvas, Moodle, Odoo) never surface via topic
-   search, so you name them and they are looked up directly.
+1. **Search** (shell scripts, near-zero tokens), three kinds:
+   - **Pattern search**: who models it *this way*? Regex over code content across
+     GitHub, GitLab and more via Sourcegraph, with a library of queries per decision
+     (`membership-table-prisma`, `soft-delete-partial-unique`, `money-int-currency`,
+     `effective-dating`, ...). "68 Prisma repos have a `Membership` table; here are
+     the top ten by stars with `path:line`" is convergence evidence in one command.
+   - **Votes that are not repos**: standards (SCIM, OneRoster, FHIR, iCalendar,
+     ISO 20022), commercial API schemas via APIs.guru, widely used libraries by
+     download count, and reference monoliths with long public migration histories.
+     `references/sources.md` lists them by category and says what each is a vote on.
+   - **Repo search**: GitHub, GitLab and Codeberg topic and phrase queries, scored on
+     relevance, maintenance, and license class. Plus the step most tools skip: the
+     incumbents in any category (Canvas, Moodle, Odoo) never surface via topic
+     search, so you name them and they are looked up directly.
 2. **Triage** to 3 to 5 finalists, chosen for diversity of origin. Four forks of the
    same design are one vote.
 3. **Deep read** in parallel, one subagent per finalist, with a brief that forbids
@@ -108,8 +119,11 @@ who built the thing.
 ```
 skills/prior-art/
   SKILL.md                              the workflow, modes, budget, honesty rules
-  bin/prior-art-search.sh               GitHub survey: score, dedupe, license class
+  bin/pattern-search.sh                 code-content search for a schema pattern (Sourcegraph, GitHub)
+  bin/prior-art-search.sh               repo survey across GitHub, GitLab, Codeberg: score, dedupe, license class
   bin/extract-model.sh                  brownfield fingerprint of any repo, ~5s, read-only
+  references/patterns.tsv               the pattern library, one query per decision per engine
+  references/sources.md                 standards, API schemas, registries, reference monoliths, by category
   references/irreversible-decisions.md  what is expensive to reverse, by tier, and why
   references/deep-read-brief.md         the subagent prompt, verbatim
   references/synthesis.md               convergence matrix, evidence weighting, output formats, honesty gate
@@ -135,7 +149,8 @@ idempotency). It says what exists, never whether it is right; the comparison doe
 
 The most valuable contribution is a new row in `references/irreversible-decisions.md`
 with a real scar behind it: a migration in a public repo where a mature project
-reversed a decision, and what it cost them. Second most valuable: a category block
-listing the convergences to look for.
+reversed a decision, and what it cost them. Second: a pattern in
+`references/patterns.tsv` whose query cleanly isolates one decision. Third: a
+category block in `sources.md` naming the standard and the incumbents.
 
 MIT.

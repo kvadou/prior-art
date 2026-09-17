@@ -1,0 +1,22 @@
+# name	decision	engine	query	evidence_of
+membership-table-prisma	identity	sourcegraph	model Membership \{ file:schema\.prisma patterntype:regexp	membership as its own table (Prisma apps)
+membership-table-rails	identity	sourcegraph	create_table "memberships" file:schema\.rb patterntype:regexp	membership as its own table (Rails apps)
+role-on-membership	identity	sourcegraph	model Membership \{[^}]*role file:schema\.prisma patterntype:regexp	role lives on the membership row, not the user
+person-login-split	identity	sourcegraph	model Profile \{[^}]*userId[^}]*organizationId file:schema\.prisma patterntype:regexp	user-in-org profile separate from login
+tenant-on-every-table	tenancy	github	organizationId filename:schema.prisma	tenant key denormalized onto tables (count per repo is the signal)
+tenant-prisma-extension	tenancy	sourcegraph	\$extends\([^)]*organizationId file:\.ts$ patterntype:regexp	single enforcement point for tenant scoping
+soft-delete-partial-unique	delete	sourcegraph	CREATE UNIQUE INDEX[^;]*WHERE[^;]*deleted_at IS NULL patterntype:regexp	unique constraints that survive soft delete
+soft-delete-prisma	delete	github	deletedAt filename:schema.prisma	soft delete column present (Prisma)
+archive-not-delete	delete	sourcegraph	archivedAt\s+DateTime\? file:schema\.prisma patterntype:regexp	archive timestamp instead of delete
+money-int-currency	money	sourcegraph	amount\s+Int[^}]*currency\s+String file:schema\.prisma patterntype:regexp	integer minor units with currency on the same model
+money-decimal	money	sourcegraph	@db\.Decimal\(\d+,\s*[24]\)[^}]*currency file:schema\.prisma patterntype:regexp	decimal amount with currency on the same model
+effective-dating	versioning	sourcegraph	(validFrom|effectiveFrom|valid_from|effective_from) file:(schema\.prisma|schema\.rb) patterntype:regexp	effective-dated rows instead of in-place mutation
+version-snapshot-table	versioning	sourcegraph	model \w+Version \{[^}]*Json file:schema\.prisma patterntype:regexp	versioned content snapshotted as JSON
+progress-pinned-to-version	versioning	sourcegraph	(lessonVersion|contentVersion|exp_version|courseVersion) file:(schema\.prisma|models\.py|schema\.rb) patterntype:regexp	learner progress pinned to a content version
+idempotency-key	idempotency	sourcegraph	idempotencyKey\s+String\s+@unique file:schema\.prisma patterntype:regexp	idempotency key with uniqueness enforced in the DB
+recurrence-rule-plus-exception	scheduling	sourcegraph	(rrule|recurrenceRule)[^}]*\n[^}]*(exception|override|exdate) file:schema\.prisma patterntype:regexp	rule + exception modeled together
+availability-date-override	scheduling	sourcegraph	model Availability \{[^}]*days\s+Int\[\][^}]*date\s+DateTime\? file:schema\.prisma patterntype:regexp	recurring rule and date override in one table (cal.com shape)
+course-offering-split	education	sourcegraph	(model (CourseRun|CourseOffering|CourseSection|Section) \{) file:schema\.prisma patterntype:regexp	course separated from its dated offering
+enrollment-per-offering	education	sourcegraph	model Enrollment \{[^}]*(sectionId|offeringId|courseRunId) file:schema\.prisma patterntype:regexp	enrollment points at the offering, not the course
+state-transitions-table	status	sourcegraph	model \w+(StatusHistory|Transition|StateChange) \{ file:schema\.prisma patterntype:regexp	status changes recorded as rows, not overwritten
+audit-log-table	audit	sourcegraph	model AuditLog \{[^}]*(actorId|userId)[^}]*(before|after|changes|diff) file:schema\.prisma patterntype:regexp	append-only audit with before/after
