@@ -67,8 +67,8 @@ elif [ -n "$MIGRATION_DIRS$MODEL_DIRS" ]; then
        -not -path '*/node_modules/*' 2>/dev/null | head -"$SCAN_CAP" > "$SCANLIST"
   SCANNED="$(g -c . "$SCANLIST" || echo 0)"
   if [ "$SCANNED" -gt 0 ]; then
-    ENTITIES="$( { xg "$SCANLIST" -hoiE 'create table (if not exists )?[`"'"'"']?[a-z_][a-z0-9_]*' \
-                     | sed -E 's/.*[tT][aA][bB][lL][eE] //; s/^(if not exists )//I' | tr -d "\`\"'"
+    ENTITIES="$( { xg "$SCANLIST" -hoiE 'create table (if not exists )?([a-z_]+\.)?[`"'"'"']?[a-z_][a-z0-9_]*' \
+                     | sed -E 's/.*[tT][aA][bB][lL][eE] //; s/^(if not exists )//I; s/^[a-z_]+\.//' | tr -d "\`\"'"
                    xg "$SCANLIST" -hoE '^[[:space:]]*class[[:space:]]+[A-Za-z_][A-Za-z0-9_]*[[:space:]]*\(.*(Model|Base|db\.Model)' \
                      | sed -E 's/^[[:space:]]*class[[:space:]]+([A-Za-z_][A-Za-z0-9_]*).*/\1/'
                    xg "$SCANLIST" -hoE '^[[:space:]]*class[[:space:]]+[A-Za-z_][A-Za-z0-9_:]*[[:space:]]*<[[:space:]]*(ApplicationRecord|ActiveRecord::Base)' \
