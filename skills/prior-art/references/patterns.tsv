@@ -3,8 +3,9 @@ membership-table-prisma	identity	sourcegraph	model Membership \{ file:schema\.pr
 membership-table-rails	identity	sourcegraph	create_table "memberships" file:schema\.rb patterntype:regexp	membership as its own table (Rails apps)
 role-on-membership	identity	sourcegraph	model Membership \{[^}]*role file:schema\.prisma patterntype:regexp	role lives on the membership row, not the user
 person-login-split	identity	sourcegraph	model Profile \{[^}]*userId[^}]*organizationId file:schema\.prisma patterntype:regexp	user-in-org profile separate from login
-tenant-on-every-table	tenancy	github	organizationId filename:schema.prisma	tenant key denormalized onto tables (count per repo is the signal)
-tenant-prisma-extension	tenancy	sourcegraph	\$extends\([^)]*organizationId file:\.ts$ patterntype:regexp	single enforcement point for tenant scoping
+tenant-key-prisma	tenancy	sourcegraph	(organizationId|tenantId|workspaceId)\s+String file:schema\.prisma patterntype:regexp	tenant key present on models (Files column approximates breadth)
+tenant-scoped-client	tenancy	sourcegraph	\$extends\( file:\.ts$ organizationId patterntype:regexp	single enforcement point for tenant scoping (Prisma client extension)
+tenant-rls-policy	tenancy	sourcegraph	CREATE POLICY[^;]*(tenant_id|organization_id|org_id) patterntype:regexp	tenant isolation enforced in the database (RLS)
 soft-delete-partial-unique	delete	sourcegraph	CREATE UNIQUE INDEX[^;]*WHERE[^;]*deleted_at IS NULL patterntype:regexp	unique constraints that survive soft delete
 soft-delete-prisma	delete	github	deletedAt filename:schema.prisma	soft delete column present (Prisma)
 archive-not-delete	delete	sourcegraph	archivedAt\s+DateTime\? file:schema\.prisma patterntype:regexp	archive timestamp instead of delete

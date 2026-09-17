@@ -121,6 +121,7 @@ skills/prior-art/
   SKILL.md                              the workflow, modes, budget, honesty rules
   bin/pattern-search.sh                 code-content search for a schema pattern (Sourcegraph, GitHub)
   bin/prior-art-search.sh               repo survey across GitHub, GitLab, Codeberg: score, dedupe, license class
+  bin/schema-coverage.sh                share of models carrying a column family, across many repos, no clone
   bin/extract-model.sh                  brownfield fingerprint of any repo, ~5s, read-only
   references/patterns.tsv               the pattern library, one query per decision per engine
   references/sources.md                 standards, API schemas, registries, reference monoliths, by category

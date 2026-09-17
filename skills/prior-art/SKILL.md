@@ -102,6 +102,17 @@ bin/pattern-search.sh membership-table-prisma   # one pattern
 bin/pattern-search.sh -q 'model Membership \{[^}]*role file:schema\.prisma patterntype:regexp'
 ```
 
+When a row is CONTESTED, turn it into a number before arguing about it:
+
+```
+bin/schema-coverage.sh calcom/cal.diy:packages/prisma/schema.prisma langfuse/langfuse:packages/shared/prisma/schema.prisma ...
+bin/schema-coverage.sh -p '(deletedAt|archivedAt)' <repo:path> ...
+```
+
+It reads each schema raw from GitHub (no clone) and reports the share of models
+carrying a column family. "STT is at 12%; comparable learner-data platforms are
+at 60-85%" is a stronger sentence than "three finalists denormalize."
+
 Engine `sourcegraph` (default): regex across GitHub, GitLab and more, ranked by
 stars, no auth. Engine `github`: keyword + `filename:`/`extension:`, needs `gh`,
 sampled by relevance not stars, so treat its counts as a floor. Output: repos
