@@ -1,12 +1,18 @@
 {
   "name": "prior-art",
-  "metadata": { "description": "Evidence before architecture. /prior-art surveys mature open-source projects and turns their convergence into your foundation, or into a divergence report on the app you already have." },
-  "owner": { "name": "Doug Kvamme" },
+  "metadata": {
+    "description": "Evidence before building. Public implementations, API contracts and change histories turned into applicable decisions."
+  },
+  "owner": {
+    "name": "Doug Kvamme"
+  },
   "plugins": [
     {
       "name": "prior-art",
-      "description": "Survey open-source prior art, rank decisions by cost to reverse, deliver a cited foundation or divergence report.",
-      "author": { "name": "Doug Kvamme" },
+      "description": "Research existing implementations and public contracts; deliver a cited foundation or review with verification checks.",
+      "author": {
+        "name": "Doug Kvamme"
+      },
       "source": "./",
       "category": "development",
       "homepage": "https://github.com/kvadou/prior-art"

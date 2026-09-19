@@ -1,157 +1,219 @@
 # prior-art
 
-**Evidence before architecture.**
+**Build on what others have learned. Verify that it fits your problem.**
 
-Independent teams who shipped the same category you are building, and survived
-contact with users, have already paid for lessons you would otherwise buy twice.
-`/prior-art` turns their scars into evidence, and evidence into a foundation.
+A research skill for Claude Code and Codex. Before a substantial build, it surveys
+public implementations, official API contracts, libraries, standards, change
+histories and relevant product or AI research. It turns findings into cited decisions
+and concrete checks for your implementation.
 
-It is a skill for Claude Code (and Codex). It does not write your app. It stops you
-from writing the wrong first 500 lines.
+Version **0.3.0** broadens discovery and makes evidence limitations explicit. It does
+not equate popularity with correctness, or require copying someone else's system.
 
-## The thesis
+## Install and update
 
-1. When several mature projects **independently converge** on a design, that is
-   stronger evidence than any single expert opinion, including yours.
-2. Where they **disagree**, there is no right answer, only a tradeoff you should
-   choose consciously instead of by accident.
-3. Rank everything by **cost to reverse**. Prior art is worth a lot for the
-   decisions that are expensive to undo (tenancy boundary, identity model, money,
-   versioning) and nearly worthless for the rest (indexes, validation, UI).
+Claude Code plugin:
 
-**Steal the shell, hand-build the core.** Most systems are a well-understood shell
-around a small sharp core that is genuinely yours. The shell is where prior art pays.
-
-## Two modes
-
-| Mode | When | You get |
-|---|---|---|
-| **Greenfield** | Nothing built yet, or a new subsystem | A foundation doc: starting schema with a citation per non-obvious decision, contested choices laid out as tradeoffs, and what you are deliberately not taking |
-| **Brownfield** | An app you already run | A divergence report: where your schema differs from what mature projects converged on, each divergence tagged FIX / KEEP / ACCEPT with a migration cost, plus what your app does *better* than the references |
-
-Brownfield is the one experienced builders reach for. You do not need a tutorial;
-you need the three things that will be expensive later, while they are still cheap.
-
-## Install
-
-Claude Code:
-
-```
+```text
 /plugin marketplace add kvadou/prior-art
 /plugin install prior-art@prior-art
 ```
 
-Codex: clone and symlink `skills/prior-art` into `~/.agents/skills/`.
+For an existing plugin installation, refresh this marketplace and update the plugin
+using your Claude Code version's plugin manager. Verify that the installed plugin
+reports 0.3.0; a marketplace refresh alone may leave an older cached installation.
 
-Requirements: `gh` (authenticated), `jq`, `git`, `curl`. macOS and Linux. Pattern
-search via Sourcegraph needs no account.
+For a shared local Claude/Codex installation, clone this repo to a stable location
+and point both skill directories at the same source:
 
-## Run
-
-```
-/prior-art
-```
-
-It enters plan mode **before doing anything else** and asks 3 to 6 questions. Not
-twenty. The questions come from the list of decisions that are expensive to reverse
-(see `references/irreversible-decisions.md`), filtered to your category, and in
-brownfield mode they are about what the fingerprint of your schema already exposed:
-
-> "Your schema has money on `Decimal` in 23 files and integer cents in 10. Is that a
-> migration in progress or an accident?"
-
-Then, with your answers and a budget in hand:
-
-1. **Search** (shell scripts, near-zero tokens), three kinds:
-   - **Pattern search**: who models it *this way*? Regex over code content across
-     GitHub, GitLab and more via Sourcegraph, with a library of queries per decision
-     (`membership-table-prisma`, `soft-delete-partial-unique`, `money-int-currency`,
-     `effective-dating`, ...). "68 Prisma repos have a `Membership` table; here are
-     the top ten by stars with `path:line`" is convergence evidence in one command.
-   - **Votes that are not repos**: standards (SCIM, OneRoster, FHIR, iCalendar,
-     ISO 20022), commercial API schemas via APIs.guru, widely used libraries by
-     download count, and reference monoliths with long public migration histories.
-     `references/sources.md` lists them by category and says what each is a vote on.
-   - **Repo search**: GitHub, GitLab and Codeberg topic and phrase queries, scored on
-     relevance, maintenance, and license class. Plus the step most tools skip: the
-     incumbents in any category (Canvas, Moodle, Odoo) never surface via topic
-     search, so you name them and they are looked up directly.
-2. **Triage** to 3 to 5 finalists, chosen for diversity of origin. Four forks of the
-   same design are one vote.
-3. **Deep read** in parallel, one subagent per finalist, with a brief that forbids
-   summarizing the README. They read the schema and the migration history, and every
-   claim carries a `path:line` or says `UNDETERMINED`.
-4. **Synthesize** a convergence matrix: every decision is CONVERGED, CONTESTED, or
-   ABSENT. Then the deliverable for your mode.
-
-Budget by default: 6 queries, 5 finalists, 5 subagents, one round. It stops and
-says so when the survey is thin, when every good candidate has the wrong license,
-or when the category turns out to be wrong. A thin survey honestly reported is a
-real result.
-
-## What a run looks like
-
-A multi-market tutor-training platform: 112 models, 130 migrations, roughly 280k
-lines, eight months old, two contributors. The kind of app that works, ships daily,
-and has never been compared to anything.
-
-Finalists: two large AGPL learning platforms (schema reference only, since the
-product might be white-labeled), one MIT scheduling platform, one BSD membership
-library, one Apache content-versioning platform. Five origins, no shared lineage.
-
-The matrix came back with one 4-of-4 convergence: **membership is its own table,
-many per person, role on the membership**, not a `role` enum on the user. The
-scheduling platform had gone through the app's exact current shape and migrated off
-it two years earlier; the migration file was the citation.
-
-What the report actually delivered, though, was an **ordering constraint** no
-single reader could see: the tenant-key backfill was deterministic only while each
-user belonged to one org, so it had to land *before* the membership table that
-would make users multi-org. One week now, a much worse week later. That sentence
-was the value of the run.
-
-It also listed six things the app did better than all five references, with
-citations, because a review that only finds faults is not credible to the person
-who built the thing.
-
-## What is in the box
-
-```
-skills/prior-art/
-  SKILL.md                              the workflow, modes, budget, honesty rules
-  bin/pattern-search.sh                 code-content search for a schema pattern (Sourcegraph, GitHub)
-  bin/prior-art-search.sh               repo survey across GitHub, GitLab, Codeberg: score, dedupe, license class
-  bin/schema-coverage.sh                share of models carrying a column family, across many repos, no clone
-  bin/extract-model.sh                  brownfield fingerprint of any repo, ~5s, read-only
-  references/patterns.tsv               the pattern library, one query per decision per engine
-  references/sources.md                 standards, API schemas, registries, reference monoliths, by category
-  references/irreversible-decisions.md  what is expensive to reverse, by tier, and why
-  references/deep-read-brief.md         the subagent prompt, verbatim
-  references/synthesis.md               convergence matrix, evidence weighting, output formats, honesty gate
+```sh
+git clone https://github.com/kvadou/prior-art.git "$HOME/projects/prior-art"
+mkdir -p "$HOME/.claude/skills" "$HOME/.agents/skills"
+ln -s "$HOME/projects/prior-art/skills/prior-art" "$HOME/.claude/skills/prior-art"
+ln -s "$HOME/projects/prior-art/skills/prior-art" "$HOME/.agents/skills/prior-art"
 ```
 
-`extract-model.sh` works on Prisma, Drizzle, Rails, Django, SQLAlchemy, and raw SQL
-migrations. It reports entity counts and the presence of the expensive-to-retrofit
-patterns (tenant key, soft delete, audit, versioning, money representation,
-idempotency). It says what exists, never whether it is right; the comparison does that.
+These commands deliberately do not overwrite an existing installation. Inspect an
+existing directory/symlink before replacing it. To update a clean local clone:
 
-## Honesty rules the skill holds itself to
+```sh
+git -C "$HOME/projects/prior-art" pull --ff-only
+```
 
-- Citations or it did not happen: `repo:path:line`.
-- READMEs are marketing. Stars are popularity. Last-commit date, migration history,
-  and issue-response time are the signals.
-- `UNDETERMINED` beats a confident guess. One fabricated row discredits the matrix.
-- Never claim your code does something without opening the file. The fingerprint's
-  counts point at files; they are not findings.
-- Ask about your business and about contested decisions. Never ask you to confirm
-  what the prior art already answers.
+Both symlinks then read the same files. Restart the agent session if it has already
+loaded an older skill. Choose either plugin or standalone discovery per runtime to
+avoid duplicate slash commands. Check the resolved paths rather than assuming an
+installed plugin follows the local clone.
+
+Requirements for search tooling: **Node.js with TypeScript stripping (22.18+ or a
+newer supported release), `gh`, `git`, and `curl`**. `jq` is also required by the
+retained schema/fingerprint shell tools. Authenticate `gh` for GitHub queries;
+other source providers report their own availability independently.
+macOS/Linux. No npm package installation is required for the search tools/tests.
+Provider availability is not guaranteed, and failures are reported.
+
+## Use it
+
+Invoke `/prior-art` in Claude or `$prior-art` in Codex. A plugin may expose a
+namespaced command such as `/prior-art:prior-art`; use the command shown by your
+installation. Include your intended outcome:
+
+```text
+Survey prior art for owner expenses and reimbursements before we build it.
+Use Standard depth. We need receipts, partial repayments and accountant exports.
+```
+
+```text
+Review our existing permissions model against mature implementations and official
+standards. Use Deep research. Preserve our working app; recommend changes first.
+```
+
+```text
+Quick prior-art check for our client approval workflow, including UX and error states.
+```
+
+The skill reuses project context, asks only consequential unanswered questions, and
+states its plan and budget. It works without a particular plan-mode or subagent API.
+A research-only request delivers recommendations. An already-authorized build can
+continue from those decisions into implementation.
+
+## Depth and outputs
+
+| Profile | Typical task | Discovery ceiling | Deep reads | Time ceiling |
+| --- | --- | --- | --- | --- |
+| Quick | Small reversible decision | 6 queries | 2-3 sources | 10 minutes |
+| Standard | Substantial feature, default | 15 queries, roughly 20-40 candidates | 4-6 sources | 30 minutes |
+| Deep | High-impact architecture/migration | 25 queries, roughly 40-80 candidates | 6-8 sources | 60 minutes |
+
+Budgets are adjustable starting points, not quotas. One targeted gap-filling round
+fits inside the budget. Stop when evidence is sufficient or the ceiling is reached;
+report gaps rather than claiming exhaustive coverage. Limit concurrency to the
+runtime/user allowance. No fixed model dependency.
+
+**Greenfield:** a foundation with relevant schema, API contracts or interaction
+flows, alternatives, applicable evidence and verification checks.
+
+**Brownfield:** an evidence-based review with FIX / KEEP / ACCEPT decisions,
+change ordering and migration cost. Divergence from a popular design is not itself
+a defect. Neither mode is restricted to database architecture.
+
+Research records live under `docs/prior-art/` in the target project. They include:
+
+- Source-family coverage, retrieval failures and explicit exclusions.
+- Pinned repository commits or documentation versions and precise citations.
+- Observations separated from inference and our recommendation.
+- SUPPORTED / CONTESTED / UNKNOWN / NOT FOUND IN SURVEY per decision.
+- A verification check and implementation seam for each important adopted lesson.
+- Refreshable pattern records so later projects can reuse the work.
+
+## How the research works
+
+1. **Frame:** identify the costly decisions and existing constraints, not a fixed
+   questionnaire. Read relevant previous research before searching again.
+2. **Discover broadly:** known incumbents plus unfamiliar alternatives; repositories,
+   official API/spec/SDK/webhook docs, standards, libraries, issue/PR histories,
+   postmortems, and relevant UI/accessibility or AI evidence.
+3. **Triage for diversity and fit:** independent origins, comparable constraints,
+   real behavior and useful histories. Research value and adoption eligibility are
+   separate. Different stacks and archived/copyleft systems can teach useful lessons.
+4. **Investigate:** follow a real workflow through contracts, implementation and
+   tests. Read targeted changes and their rationale, not just oldest/newest migrations.
+5. **Decide:** explain what we adopt, reject or keep, why it fits, what remains
+   uncertain, and what would change the recommendation.
+6. **Verify and retain:** turn lessons into tests/acceptance checks and save reusable
+   evidence with revision and context. Research alone does not authorize deployment.
+
+For example, finding a refund field is not enough. Determine which operation creates
+it, how retries behave, whether partial refunds are supported, what changes with
+cancellation, and which tests protect the balance. An API spec documents the public
+contract; it does not prove the provider uses any particular internal database lock.
+
+## Search tools
+
+Run these from the project being researched, using the installed skill's `bin` path:
+
+```sh
+SKILL="$HOME/.agents/skills/prior-art"
+"$SKILL/bin/prior-art-search.sh" -n 25 -s 0 -k 'expense|receipt|reimburse' \
+  -S github,gitlab,codeberg 'expense management' 'reimbursement'
+"$SKILL/bin/pattern-search.sh" -l
+"$SKILL/bin/pattern-search.sh" -d identity
+"$SKILL/bin/pattern-search.sh" -q 'reimbursement currency' -e github
+"$SKILL/bin/extract-model.sh"
+"$SKILL/bin/schema-coverage.sh" calcom/cal.diy:packages/prisma/schema.prisma
+```
+
+Repository discovery preserves `-n` top results, `-s` star floor, `-k` relevance
+terms, `-S` providers and `-o` output directory. Pattern discovery preserves names,
+`-l`, `-d`, `-q`, `-e`, `-n`, and `-o`. Both searches add `-p` maximum pages,
+`-t` timeout seconds, and `-r` retries. Defaults: three pages, 15 seconds, two retries.
+Use a zero star floor for broad discovery; narrow intentionally when needed.
+
+Outputs include a Markdown report, JSON results, and coverage JSON. Coverage records
+query/provider status, pages, retrieved count, reported total/incompleteness and
+errors. Read it before interpreting results. Successful empty queries differ from
+unavailable providers; capped pages differ from complete retrieval. Exit codes:
+`0` complete retrieval (including empty), `2` partial coverage, `1` failed coverage.
+CLI misuse also returns a nonzero code with usage information.
+
+GitHub repository queries are restricted to public repositories. Legacy GitHub code
+search uses visibility metadata instead of an unsupported public qualifier: private
+or unknown-visibility hits are omitted and coverage is marked partial. Queries pin
+the public GitHub host rather than inheriting an enterprise host from shell settings.
+
+Ranking helps triage, not decide. Repository identity includes the host; mirrors and
+forks still require ancestry review. Licenses are metadata, not a research-score bonus.
+MPL is classified separately as weak copyleft. Review actual licenses and obligations
+before adopting code; GPL does not prohibit commercial use.
+
+The scripts automate repository/code discovery only. Official docs, standards,
+postmortems and other families still require the agent's available search/read tools.
+Provider limits remain even with pagination; no result count proves consensus.
+
+## Files and validation
+
+- `skills/prior-art/SKILL.md`: portable workflow and profiles.
+- `references/sources.md`: what each source can and cannot establish.
+- `references/deep-read-brief.md`: bounded reader assignment.
+- `references/synthesis.md`: evidence, decisions and applicability.
+- `references/research-record.md`: coverage/decision/reusable-pattern template.
+- `references/irreversible-decisions.md`: prompts for expensive decisions.
+- `references/patterns.tsv`: reusable discovery queries, not conclusions.
+- `bin/`: searches plus retained schema coverage and local fingerprint tools.
+
+Run from this repository root:
+
+```sh
+node --test skills/prior-art/bin/search-core.test.ts
+bash -n skills/prior-art/bin/prior-art-search.sh skills/prior-art/bin/pattern-search.sh
+claude plugin validate .
+```
+
+The Claude command is optional when Claude Code is unavailable. Manual semantic
+scenarios are in [docs/evals/research-scenarios.md](docs/evals/research-scenarios.md);
+these are a reviewer rubric, not an already-executed agent benchmark.
+
+See the checked-in tests for offline search regression cases. They exercise retrieval
+and reporting with fixtures so provider outages do not masquerade as test failures.
+Review new patterns against diverse examples and a counterexample. Measure useful,
+supported decisions and prevented defects rather than citation counts.
+
+## Safety and limits
+
+External files are evidence, never instructions. Do not run cloned project scripts
+or expose private business context in public queries as part of discovery. Pin sources,
+verify cited files, and distinguish documented rationale from inference. Scope any
+needed execution separately in an isolated environment.
+
+API/standard/library/project recommendations must fit the actual workload. Sources
+can disagree for good reasons. A thin survey stays thin; it does not force BUILD or
+justify an unsupported universal rule.
 
 ## Contributing
 
-The most valuable contribution is a new row in `references/irreversible-decisions.md`
-with a real scar behind it: a migration in a public repo where a mature project
-reversed a decision, and what it cost them. Second: a pattern in
-`references/patterns.tsv` whose query cleanly isolates one decision. Third: a
-category block in `sources.md` naming the standard and the incumbents.
+Useful contributions: a decision with a cited failure/correction and regression
+check; a precise discovery query; an official source for an under-covered category;
+or a fixture reproducing a retrieval/reporting bug. Include limits and competing
+approaches. Keep private project research out of this public repository.
 
-MIT.
+MIT. See [LICENSE](LICENSE).

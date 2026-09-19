@@ -1,97 +1,82 @@
-# Synthesis: turning reads into a decision
+# Synthesis: evidence into decisions
 
-The deep reads produce facts. This step produces judgment. Do not delegate it.
+The primary agent owns synthesis and recommendations. Readers supply bounded,
+cited evidence, not a collective vote that decides the design. Reuse established
+user constraints and answers; ask only when an unresolved choice materially changes
+the outcome and cannot be resolved within existing authorization.
 
-## Step 1: The convergence matrix
+## 1. Build the decision matrix
 
-One row per decision (from `irreversible-decisions.md`), one column per finalist.
+Use one row per relevant decision, not per fashionable feature. Include our
+constraints, alternatives, source observations, contrary evidence and evidence gaps.
 
-| Decision | Tier | RepoA | RepoB | RepoC | RepoD | Signal |
-|---|---|---|---|---|---|---|
-| Course vs offering vs enrollment | T1 | split 3 | split 3 | split 3 | split 2 | **CONVERGED (3/4)** |
-| Soft delete | T2 | soft+unique-partial | hard | soft | archive table | **CONTESTED** |
+| Decision / reversal cost | Constraint fit | Evidence and ancestry | Status | Recommendation / invariant |
+|---|---|---|---|---|
+| Payment retry behavior / T1 | Concurrent retries, durable history | Pinned implementation + official provider contract; SDK shares vendor ancestry | supported within these limits | Stable operation key; duplicate retries produce one effect |
 
-Classify every row:
+Use these statuses consistently:
 
-- **CONVERGED**: 3+ independent projects resolved it the same way.
-  This is the strongest evidence available, stronger than any single expert opinion,
-  because each of those teams paid for the lesson in production. **Adopt unless you
-  have a specific, written reason not to.** The reason goes in the doc.
-- **CONTESTED**: mature projects genuinely disagree. There is no right answer;
-  there is a tradeoff keyed to your constraints. **This is a real decision you must
-  make consciously.** Present it as an option with the tradeoff, do not silently pick.
-- **ABSENT**: nobody models it. Either you are wrong that you need it, or it is
-  your genuine edge. Say which, and say why.
+- **supported**: inspected evidence supports a specified claim under stated
+  conditions. State confidence and limits; even one authoritative source may suffice
+  for its own contract. This is not proof that the choice fits our system.
+- **contested**: credible evidence supports competing outcomes or reveals different
+  constraints. Explain the mechanism and tradeoff, then recommend within our scope.
+- **unknown**: evidence is insufficient, ambiguous, inaccessible or not investigated.
+- **not-found-in-surveyed-sources**: a bounded search found no instance. State the
+  searched sources/paths/terms and exclusions. This does not establish global absence,
+  novelty, lack of need or a market opportunity.
 
-The CONTESTED rows are the questions worth putting to the user. The CONVERGED rows
-are the ones worth not asking about.
+Source counts are coverage metadata, never a correctness threshold or automatic
+"adopt" rule. Check common ancestry: forks, copied schemas, vendor SDKs, derivative
+papers and shared libraries may trace to one decision. Agreement across genuinely
+independent implementations strengthens transfer confidence only when constraints
+match. A relevant counterexample can outweigh several superficial matches.
 
-## Step 2: Weight the evidence honestly
+## 2. Assess claims, not prestige
 
-Not every repo's vote counts the same:
+Distinguish **observation** (what the source says/does), **inference** (what we think
+explains it), and **recommendation** (what fits us). Pin citations and version/date.
+An API proves its public contract, not internal persistence. A migration proves a
+change occurred, not why it occurred; use its PR, issue, regression test or author
+explanation for causal claims. Historical lessons can be valuable but remain
+conditional on workload, jurisdiction, architecture and operational capacity.
 
-- A repo with 8 years of migrations and 200 contributors that changed its mind once
-  is the strongest possible signal. A 2-year-old repo with 3 contributors that
-  copied the first repo is not an independent vote. **Look for common ancestry
-  before calling something converged**, four forks of the same design are one vote.
-- A scar (a migration that split or reversed something) outweighs a greenfield
-  choice, because it is evidence of a lesson rather than a preference.
-- Commercial incumbents' public docs count as a vote when their data model is
-  visible, even though you cannot read their code.
+Assess authority for the specific claim, directness, version freshness, reproducible
+behavior, independent ancestry, applicable failure modes and contrary evidence.
+Stars, downloads, age, company size and paper citations are discovery signals only.
+Record adoption constraints separately: license/attribution, security, maintenance,
+compatibility, operational burden and migration cost. Research eligibility is broader
+than eligibility to copy, deploy or depend on a source.
 
-## Step 3: Mode-specific output
+## 3. Produce the scoped deliverable
 
-### Greenfield → foundation document
+For greenfield work, deliver a foundation: verdict (ADOPT / FORK / STEAL-PATTERNS /
+BUILD), alternatives, proposed contracts/schema where relevant, explicit invariants,
+rejected patterns and reasons, the product's distinct core, and reuse obligations.
+Do not force schema output for a UX, algorithm, AI evaluation or operations question.
 
-`docs/prior-art/YYYY-MM-DD-<topic>-foundation.md`:
+For brownfield work, show verified current behavior and decision-level differences.
+Use **FIX** when benefits justify change, **KEEP** for a deliberate fit, **ACCEPT** for
+a known limitation whose migration cost exceeds benefit, and **INVESTIGATE** when
+uncertainty blocks judgment. Include migration/rollback implications and testable
+acceptance criteria. Do not invent strengths to satisfy a quota; report those observed.
 
-1. **Verdict**: ADOPT / FORK / STEAL-PATTERNS / BUILD, and the license posture that
-   drove it.
-2. **The starting schema**: real DDL or `schema.prisma`, not prose. Every
-   non-obvious decision carries a citation: `-- enrollment split: frappe/lms prisma/schema.prisma:212`.
-3. **Contested decisions**: each with the options, the tradeoff, and your
-   recommendation. These are for the user to rule on.
-4. **What we are NOT taking, and why**: as important as what you took. Prevents
-   re-litigating it in three months.
-5. **The sharp core**: what stays hand-built, restated now that you have seen how
-   others modeled the surrounding shell.
-6. **License obligations**: if anything is copied verbatim, the attribution and the
-   terms. If it is copyleft and the posture is commercial, say so loudly.
+For either mode, prioritize the smallest complete next phase. Convert material
+findings into implementation consequences and verification: invariants, regression
+cases, failure/retry tests, performance budgets, accessibility checks or AI evaluation
+criteria. Each should trace to a decision and source; no test-writing requirement for
+facts irrelevant to the authorized build. A research recommendation is not proof
+that an implementation already satisfies it.
 
-### Brownfield → divergence report
+## 4. Deliver and preserve
 
-`docs/prior-art/YYYY-MM-DD-<topic>-review.md`:
+Verify citations against opened sources and our actual code. Explain conflicts,
+unknowns, incomplete coverage, budget stops and shallow-history limits. Never turn a
+fingerprint/search hit into a defect without reading its use.
 
-1. **Headline**: the count of T1 and T2 divergences, in one sentence.
-2. **Divergence table**, ordered by tier:
-
-| # | Decision | Tier | Convergent pattern | What we do | Verdict | Migration cost |
-|---|---|---|---|---|---|---|
-| 1 | Money representation | T1 | integer minor units (4/4) | `Float` on 23 files | **FIX** | weeks: backfill + dual-read |
-
-3. Each divergence gets one of three verdicts, and **the third one is mandatory to
-   use where it applies**:
-   - **FIX**: an accident that will cost more the longer it stands. Include the
-     migration path, not just the complaint.
-   - **KEEP**: a deliberate divergence that is your edge or fits your constraints.
-     Write down *why*, so the next reviewer does not re-flag it.
-   - **ACCEPT**: wrong in theory, not worth the migration. Say the cost that makes
-     it not worth it.
-4. **What we do better**: established apps usually beat the open-source reference
-   somewhere. Say where. A review that only finds faults is not credible and will
-   not be trusted by the person who built the thing.
-5. **Top 3 actions**, in reversal-cost order, each with a rough effort estimate.
-
-## Step 4: Honesty gate before delivering
-
-Check each item. If any fails, fix it before showing the user:
-
-- [ ] Every claim about an external repo has a `path:line` citation.
-- [ ] Every claim about OUR repo was verified by opening the file: the fingerprint's
-      grep counts are a hint, never evidence. A count of 23 for "money as float" means
-      *go look at those files*, not "we store money as float."
-- [ ] CONVERGED rows actually have 3+ *independent* sources.
-- [ ] Contested decisions are presented as choices, not as a verdict.
-- [ ] Nothing is recommended that the user's stated constraints rule out.
-- [ ] In brownfield mode: at least one KEEP or "what we do better" entry, or an
-      explicit statement that you looked for one and found none.
+Save a refreshable decision record in the project's established knowledge workflow:
+source receipt, scope/constraints, decision, alternatives, evidence status, confidence,
+verification implications, owner if known, and review trigger (version change,
+constraint change, incident or explicit review date). Preserve prior rationale and
+link superseding decisions. Do not silently overwrite history or claim ingestion,
+tests, deployment or completion without evidence.
