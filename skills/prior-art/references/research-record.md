@@ -4,12 +4,24 @@ Use a concise project-local document, not a mandatory new database. Omit irrelev
 sections; preserve evidence limitations. Link raw search reports/coverage rather
 than pasting them in full. Never publish private project context with public research.
 
+## Decision first
+
+- **Recommendation:** choose, keep, defer or investigate within the authorized scope.
+- **Evidence:** strongest applicable observation with source/revision/locator.
+- **Limitation:** material unknown or constraint that could change the recommendation.
+- **Next check:** smallest verification or review trigger; none if already resolved.
+
 ## Run header
 
 - Question/outcome, greenfield or brownfield, scope and profile.
 - Known constraints; material assumptions and unanswered business questions.
 - Queries/time/tool budget, actual use if measured; source retrieval date.
-- Prior research reused and why it is still applicable.
+- Local-first review: prior decisions/research, current code/tests, installed tools
+  and integrations, package capabilities, then public alternatives. Record relevant
+  checks or skips without inventorying unrelated systems.
+- Prior research reused, revisions/constraints revalidated, and why it still applies.
+- Repeated workaround, if any: observed recurrence, cause still uncertain, and the
+  decision it motivates. Recurrence is not itself evidence that replacement is best.
 
 ## Coverage ledger
 
@@ -31,7 +43,9 @@ the research question is answered. Record both when needed.
 - **Inferred:** explanation if not directly documented; competing interpretations.
 - **Fits us because:** user/data/scale/security/operational constraints.
 - **Recommendation:** adopt dependency / adapt pattern / implement / keep / defer.
-- **Alternatives rejected:** concrete tradeoff, not popularity.
+- **Alternatives, including keep current:** concrete tradeoffs, not popularity.
+- **Operating cost:** recurring human work, maintenance, provider/dependency cost,
+  migration and rollback effort. Separate measured amounts from estimates/unknowns.
 - **Feasibility (when relevant):** demonstrated / documented but untested / blocked /
   unknown; account/runtime constraints, human handoffs, costs, smallest proof and result.
 - **Implementation seam:** file, function, contract, migration or interface flow.

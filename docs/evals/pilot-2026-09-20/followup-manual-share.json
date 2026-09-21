@@ -1,0 +1,29 @@
+{
+  "task_id": "manual-share",
+  "arm": "prior-art",
+  "task_sha256": "deea1419232503c3257c732c29d66fab207c17caecc40caa4f106d3dd77f438c",
+  "instructions_sha256": "3adcd3e8e0e65f1e36dfa61123a0835dc922993298d8d247a474bfe16d185f9a",
+  "elapsed_seconds": 9.951,
+  "exit_code": 0,
+  "timed_out": false,
+  "is_error": false,
+  "subtype": "success",
+  "answer": "**Recommendation: KEEP the current manual flow today; prepare one internal seam. Do not pursue the upgrade yet.**\n\n**Strongest evidence:** E1 \u2014 the Basic API cannot create shares, so no amount of local code removes the manual browser step. E3 blocks the only known unblocking path (Advanced, E2) at this time.\n\n**Material limitation:** E2 is unverified on price and regional eligibility, and E5 is a vendor-adjacent blog with no plan details \u2014 treat it as NOT FOUND IN SURVEY, not proof that automation works on Basic. E4 confirms we can track state but have no provider token, so end-to-end automation is unproven in our environment.\n\n**Status quo assessment**\n- FIX (partial, now): repeated logins and copy/paste are recurring human cost, but the copy/paste is provider-imposed, not self-inflicted.\n- KEEP: manual browser sharing as the sharing mechanism.\n- ACCEPT: per-client manual step until a plan decision exists.\n- INVESTIGATE: E2 eligibility and cost; whether session reuse legitimately reduces re-logins under the provider's terms.\n\n**Smallest next proof (proposal, unauthorized to execute):**\nBuild the E4-side recipient/handoff tracker against a stubbed share-link input \u2014 no provider token, no account, no external writes. This removes duplicate bookkeeping and re-entry errors immediately, and becomes the seam an API-created share would later fill. Verification: a test asserting each client reaches \"link recorded \u2192 delivered\" exactly once, with no duplicate outbound handoffs.\n\n**Next check:** ask the owner for written Advanced pricing and regional eligibility; re-decide only when E2 is confirmed. Recurrence alone does not justify the upgrade.",
+  "cost_usd": 0.058929999999999996,
+  "model_usage": {
+    "claude-opus-5": {
+      "inputTokens": 2,
+      "outputTokens": 614,
+      "cacheReadInputTokens": 0,
+      "cacheCreationInputTokens": 4357,
+      "webSearchRequests": 0,
+      "costUSD": 0.058929999999999996,
+      "contextWindow": 1000000,
+      "maxOutputTokens": 64000,
+      "thinkingTokens": 17,
+      "canonicalModel": "claude-opus-5",
+      "provider": "firstParty",
+      "costBasis": "list"
+    }
+  }
+}

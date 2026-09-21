@@ -1,0 +1,350 @@
+[
+  {
+    "task_id": "existing-helper",
+    "arm": "none",
+    "task_sha256": "46614e530ac944a687b9ec700159ea2c857a85773bffa5f1c92a9ae9fb21302e",
+    "instructions_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "elapsed_seconds": 9.324,
+    "exit_code": 0,
+    "timed_out": false,
+    "is_error": false,
+    "subtype": "success",
+    "answer": "**Recommendation: use the existing `retryRead` helper in `src/retry.ts`. Change nothing else.**\n\n**What to do**\nWrap the transient read call sites in `retryRead(operation, { maxAttempts, backoffMs })`. No new dependency, no new module, no config change. Pick `maxAttempts` remembering it counts the first call (so `3` = 1 attempt + 2 retries).\n\n**Evidence**\n- E1: the helper already exists locally and its tests establish the three behaviors you need \u2014 `maxAttempts` includes the first call, retries limited to 408/429/503, mutations never retried. That matches \"transient reads\" exactly.\n- E2: a prior ADR already selected this helper, and workload and version are unchanged, so the conditions behind that decision still hold. Reusing it is consistent, not a new bet.\n- E3: the popular public package is disqualified on a hard constraint \u2014 it requires Node 26, the project is pinned to Node 24. More features don't matter if it can't run here.\n\n**Uncertainty**\n- E4: the registry search timed out, so I have no evidence about other packages. This is an absence of information, not a finding that no better option exists. It doesn't weaken the case for `retryRead`, which stands on E1/E2 alone.\n- Unknown whether your specific read paths surface the status codes in the form `retryRead` inspects.\n\n**Next check (verification)**\nAt one call site, force a 503 and confirm: retry occurs, total calls equal `maxAttempts`, and a 500 or 400 fails immediately without retry. That validates wiring and status-code plumbing in one pass.",
+    "cost_usd": 0.0206,
+    "model_usage": {
+      "claude-opus-5": {
+        "inputTokens": 2,
+        "outputTokens": 554,
+        "cacheReadInputTokens": 0,
+        "cacheCreationInputTokens": 674,
+        "webSearchRequests": 0,
+        "costUSD": 0.0206,
+        "contextWindow": 1000000,
+        "maxOutputTokens": 64000,
+        "thinkingTokens": 21,
+        "canonicalModel": "claude-opus-5",
+        "provider": "firstParty",
+        "costBasis": "list"
+      }
+    }
+  },
+  {
+    "task_id": "existing-helper",
+    "arm": "prior-art-search",
+    "task_sha256": "46614e530ac944a687b9ec700159ea2c857a85773bffa5f1c92a9ae9fb21302e",
+    "instructions_sha256": "25c82ed7076ba930f3564ea6c0408987f2d8ce3f50773d387acb3209325844d0",
+    "elapsed_seconds": 8.609,
+    "exit_code": 0,
+    "timed_out": false,
+    "is_error": false,
+    "subtype": "success",
+    "answer": "### Prior Art Verdict\n\n- **Status**: DONE_WITH_CONCERNS \u2014 the registry sweep (E4) timed out, so the external package field is unsearched; this does not change the verdict, but it means \"no better package exists\" is unproven.\n- **Verdict**: Adopt \u2014 reuse `retryRead` from local `src/retry.ts`.\n- **Selected Reference**: `src/retry.ts` \u2192 `retryRead(operation, { maxAttempts, backoffMs })` (local, in-repo)\n- **Quality Signal**: Covered by tests proving three behaviors you need \u2014 `maxAttempts` counts the first call, retries limited to 408/429/503, mutations never retried (E1). Previously ratified by ADR for this same workload and version (E2).\n- **Adoption Strategy**: Wrap only the transient read call sites in `retryRead`; pass `maxAttempts` and `backoffMs` explicitly rather than relying on defaults. No new dependency, no version bump, no change to `src/retry.ts` itself. This is the smallest change that satisfies the requirement.\n- **Rejected**: The popular public package (E3) requires Node 26 against a pinned Node 24 \u2014 adopting it forces a runtime upgrade far larger than the feature. Its extra retry features are not required here.\n\n**Uncertainty**: E4 leaves other registry candidates unknown. Low impact: even a strong alternative would have to beat a zero-cost, already-ratified, already-tested helper.\n\n**Next check**: Confirm every transient read path is wrapped and no mutation path was wrapped by mistake \u2014 grep call sites, then run the existing `retry.ts` test suite on Node 24 unchanged. Re-run the registry search only if requirements outgrow the helper.",
+    "cost_usd": 0.04554,
+    "model_usage": {
+      "claude-opus-5": {
+        "inputTokens": 2,
+        "outputTokens": 610,
+        "cacheReadInputTokens": 0,
+        "cacheCreationInputTokens": 3028,
+        "webSearchRequests": 0,
+        "costUSD": 0.04554,
+        "contextWindow": 1000000,
+        "maxOutputTokens": 64000,
+        "thinkingTokens": 24,
+        "canonicalModel": "claude-opus-5",
+        "provider": "firstParty",
+        "costBasis": "list"
+      }
+    }
+  },
+  {
+    "task_id": "existing-helper",
+    "arm": "prior-art",
+    "task_sha256": "46614e530ac944a687b9ec700159ea2c857a85773bffa5f1c92a9ae9fb21302e",
+    "instructions_sha256": "aad55b8db8f798c5cc576e17379d936bc8fa8d079c3008ca461448ffa55f4fa9",
+    "elapsed_seconds": 10.465,
+    "exit_code": 0,
+    "timed_out": false,
+    "is_error": false,
+    "subtype": "success",
+    "answer": "**Recommendation: KEEP \u2014 call the existing `retryRead` from `src/retry.ts` at the transient read sites. No new dependency, no new helper.**\n\n**Strongest evidence (SUPPORTED).** E1: the capability already exists locally and is covered by tests that pin the three behaviors that usually go wrong \u2014 `maxAttempts` counts the first call, retries limited to 408/429/503, mutations never retried. E2: a prior ADR already selected this helper, and neither workload nor version has changed, so that decision's premises still hold. E3 disqualifies the richer public package on adoption grounds, not quality: it requires Node 26 against a pinned Node 24, so it is unusable regardless of feature count.\n\n**Material limitation (UNKNOWN).** E4: registry search timed out, so the alternatives space is unsurveyed. This is unresolved coverage, not evidence that no better package exists. It does not change the recommendation \u2014 reusing a tested in-repo helper needs no market survey to justify \u2014 but a future \"should we adopt X instead\" question would need that search to complete. Also untested here: whether the existing backoff parameters suit these specific read endpoints' latency and rate-limit behavior.\n\n**Next check (verification).** Before merge, add one test per newly wrapped read site asserting: (1) a 503 then success resolves within `maxAttempts`, (2) a 500 or 400 fails immediately without retry, and (3) total attempts equal `maxAttempts`, not `maxAttempts + 1`. Then confirm under real or simulated 429s that `backoffMs` does not exceed the caller's timeout budget \u2014 if it does, tune parameters at the call site rather than editing the shared helper.",
+    "cost_usd": 0.05746,
+    "model_usage": {
+      "claude-opus-5": {
+        "inputTokens": 2,
+        "outputTokens": 586,
+        "cacheReadInputTokens": 0,
+        "cacheCreationInputTokens": 4280,
+        "webSearchRequests": 0,
+        "costUSD": 0.05746,
+        "contextWindow": 1000000,
+        "maxOutputTokens": 64000,
+        "thinkingTokens": 26,
+        "canonicalModel": "claude-opus-5",
+        "provider": "firstParty",
+        "costBasis": "list"
+      }
+    }
+  },
+  {
+    "task_id": "existing-helper",
+    "arm": "search-first",
+    "task_sha256": "46614e530ac944a687b9ec700159ea2c857a85773bffa5f1c92a9ae9fb21302e",
+    "instructions_sha256": "e97cbd7cf3e472952b241bfe4d73217d94df6ac24dd3b491e50c0334dc9e01df",
+    "elapsed_seconds": 8.917,
+    "exit_code": 0,
+    "timed_out": false,
+    "is_error": false,
+    "subtype": "success",
+    "answer": "## Recommendation\n\nUse the existing local helper: `retryRead(operation, {maxAttempts, backoffMs})` from `src/retry.ts`. Wrap the transient read call sites in it. No new dependency, no new abstraction \u2014 this is the smallest change that satisfies the requirement.\n\n## Evidence\n\n- **E1** \u2014 the helper already exists here and its tests pin the semantics that matter: `maxAttempts` counts the first call, retries are limited to 408/429/503, and mutations are never retried. Transient reads are exactly the case it covers.\n- **E2** \u2014 a prior ADR already selected this helper, and workload and version are unchanged. The conditions behind that decision still hold, so it does not need to be re-litigated.\n- **E3** \u2014 the popular public package has more features but requires Node 26; the project is pinned to Node 24. It is not installable here regardless of merit.\n\n## Uncertainty\n\n- **E4** \u2014 the registry search timed out, so I have **no evidence about other packages**. I did not survey the ecosystem; I am not claiming the local helper is the best available option, only that it fits and the known alternative does not.\n- Unverified: whether the transient reads in question actually fail with 408/429/503. If they surface as socket/DNS errors or a different status, the helper will pass them through without retrying.\n\n## Next check\n\nEnumerate the failing read call sites and record the actual error class and status code each produces. Compare against the 408/429/503 set. If the observed failures fall outside it, the gap is in the retry predicate \u2014 not in the choice of helper.",
+    "cost_usd": 0.041825,
+    "model_usage": {
+      "claude-opus-5": {
+        "inputTokens": 2,
+        "outputTokens": 527,
+        "cacheReadInputTokens": 0,
+        "cacheCreationInputTokens": 2864,
+        "webSearchRequests": 0,
+        "costUSD": 0.041825,
+        "contextWindow": 1000000,
+        "maxOutputTokens": 64000,
+        "thinkingTokens": 23,
+        "canonicalModel": "claude-opus-5",
+        "provider": "firstParty",
+        "costBasis": "list"
+      }
+    }
+  },
+  {
+    "task_id": "manual-share",
+    "arm": "none",
+    "task_sha256": "deea1419232503c3257c732c29d66fab207c17caecc40caa4f106d3dd77f438c",
+    "instructions_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "elapsed_seconds": 10.117,
+    "exit_code": 0,
+    "timed_out": false,
+    "is_error": false,
+    "subtype": "success",
+    "answer": "**Recommendation: keep the current manual flow for now; add one small internal improvement.**\n\n**Feasibility today**\n- Full automation is not possible on your current plan. E1 is decisive: the Basic API cannot create shares, so no amount of local engineering produces a share link.\n- The Advanced plan (E2) is the only plausible path, but price and regional eligibility are unverified, and E3 means no approval is available today. E4 confirms the local app has no provider token, so it cannot act on the vendor's behalf regardless.\n- E5 (the blog's \"full automation\") is unreliable \u2014 it states no plan details and likely assumes a paid tier. Treat it as a lead, not evidence.\n\n**Status quo**\nRepeated logins and manual copy/paste remain necessary for each client. That is a real cost, but it is currently the only working path, and it is safe \u2014 nothing breaks, nothing is purchased, no credentials are exposed.\n\n**Smallest next proof (no accounts, writes, signups, or purchases)**\n1. Use E4's capability now: have the local app track requested recipients and handoff status, so the human step becomes \"paste into a tracked queue\" rather than untracked repetition. This cuts errors and gives you a measured baseline.\n2. Log, for two weeks, the number of manual shares and minutes spent. That produces the concrete cost figure your owner needs.\n3. Separately, read the vendor's public plan documentation to confirm whether Advanced actually offers API-created shares in your region, and at what price \u2014 read-only, no signup.\n\nRevisit the upgrade decision once steps 2 and 3 give you cost and eligibility facts.",
+    "cost_usd": 0.02096,
+    "model_usage": {
+      "claude-opus-5": {
+        "inputTokens": 2,
+        "outputTokens": 566,
+        "cacheReadInputTokens": 0,
+        "cacheCreationInputTokens": 680,
+        "webSearchRequests": 0,
+        "costUSD": 0.02096,
+        "contextWindow": 1000000,
+        "maxOutputTokens": 64000,
+        "thinkingTokens": 32,
+        "canonicalModel": "claude-opus-5",
+        "provider": "firstParty",
+        "costBasis": "list"
+      }
+    }
+  },
+  {
+    "task_id": "manual-share",
+    "arm": "prior-art-search",
+    "task_sha256": "deea1419232503c3257c732c29d66fab207c17caecc40caa4f106d3dd77f438c",
+    "instructions_sha256": "25c82ed7076ba930f3564ea6c0408987f2d8ce3f50773d387acb3209325844d0",
+    "elapsed_seconds": 12.418,
+    "exit_code": 0,
+    "timed_out": false,
+    "is_error": false,
+    "subtype": "success",
+    "answer": "### Prior Art Verdict\n\n- **Status**: DONE_WITH_CONCERNS \u2014 E2 (price, regional eligibility) unverified; E5 unsourced and likely assumes a paid tier. No tools available, so this is an evidence-only pass, not a live search.\n- **Verdict**: Extend (partial) \u2014 keep the current integration, add local tracking; defer the API change.\n\n**Feasibility.** Full automation is blocked, not merely unchosen. E1 says the Basic API cannot create shares, so no amount of local code produces a share link. E4 confirms we hold no provider token, so even the Advanced path (E2) is unreachable today, and E3 blocks the upgrade. E5 is consistent with E2 only if the author was on a paid plan; it is not evidence that Basic can automate.\n\n**Alternatives considered.** (a) Do nothing: repeated logins and copy/paste persist, error rate scales with client count \u2014 real cost, not zero. (b) Build a scraper/session-replay against the browser flow: violates the \"no accounts/external writes\" scope and is fragile. (c) Upgrade now: blocked by E3 and unpriced by E2. (d) Extend locally: permitted by E4 and authorized.\n\n**Smallest next proof.** Two cheap, non-purchasing steps: (1) read the vendor's public pricing/region page to close E2's gap and produce a costed one-pager for the owner; (2) use E4 to log requested recipients and handoff status, so the manual paste becomes tracked and auditable. Neither requires an account, signup, token, or spend.\n\n**Pitfalls.** Don't treat blog claims as tier evidence; don't automate via credential replay; avoid building local state that a later API migration must throw away.",
+    "cost_usd": 0.022608,
+    "model_usage": {
+      "claude-opus-5": {
+        "inputTokens": 2,
+        "outputTokens": 616,
+        "cacheReadInputTokens": 2436,
+        "cacheCreationInputTokens": 598,
+        "webSearchRequests": 0,
+        "costUSD": 0.022608,
+        "contextWindow": 1000000,
+        "maxOutputTokens": 64000,
+        "thinkingTokens": 39,
+        "canonicalModel": "claude-opus-5",
+        "provider": "firstParty",
+        "costBasis": "list"
+      }
+    }
+  },
+  {
+    "task_id": "manual-share",
+    "arm": "prior-art",
+    "task_sha256": "deea1419232503c3257c732c29d66fab207c17caecc40caa4f106d3dd77f438c",
+    "instructions_sha256": "aad55b8db8f798c5cc576e17379d936bc8fa8d079c3008ca461448ffa55f4fa9",
+    "elapsed_seconds": 11.228,
+    "exit_code": 0,
+    "timed_out": false,
+    "is_error": false,
+    "subtype": "success",
+    "answer": "**Recommendation: KEEP the current manual flow for now; build a local-only tracking/prep layer (E4). Do not pursue the upgrade this week.**\n\n**Feasibility (evidence, not assumption)**\n- E1 is a hard blocker: on Basic, API-created shares are unavailable, so no amount of local code removes the manual step. SUPPORTED.\n- E2 would remove it, but price and regional eligibility are unverified \u2014 documented capability, not demonstrated. UNKNOWN.\n- E3 makes the upgrade path unavailable today regardless of E2. SUPPORTED.\n- E4 gives real partial relief: recipient list, status, audit of handoffs \u2014 without provider credentials. SUPPORTED.\n- E5 is a vendor-agnostic blog claim with no plan details; it almost certainly assumes a paid tier. NOT CREDIBLE as evidence \u2014 treat as a lead only.\n\n**Disposition**\n- KEEP: manual browser share (only working path).\n- FIX (cheap): repeated logins and copy/paste bookkeeping \u2014 mitigate locally.\n- INVESTIGATE: Advanced plan price/regional eligibility, and whether its API scope covers your share type.\n- ACCEPT: one manual share action per client until a plan decision is possible.\n\n**Smallest next proof (no accounts, no writes, no spend)**\n1. Read the vendor's public pricing/API docs for share-creation scope and regional availability; record version/date.\n2. Instrument the current flow for two weeks: count clients, minutes per handoff, error/rework rate.\n3. Prototype E4 locally against a stub \u2014 prove it cuts steps before any token exists.\n\n**Verification:** measured minutes/client before vs. after E4; a written plan comparison the owner can approve or decline on evidence.\n\n**Gap:** no verified pricing, no authorized credential test. Do not claim automation is achievable until E2 is confirmed.",
+    "cost_usd": 0.024558999999999997,
+    "model_usage": {
+      "claude-opus-5": {
+        "inputTokens": 2,
+        "outputTokens": 669,
+        "cacheReadInputTokens": 3688,
+        "cacheCreationInputTokens": 598,
+        "webSearchRequests": 0,
+        "costUSD": 0.024558999999999997,
+        "contextWindow": 1000000,
+        "maxOutputTokens": 64000,
+        "thinkingTokens": 26,
+        "canonicalModel": "claude-opus-5",
+        "provider": "firstParty",
+        "costBasis": "list"
+      }
+    }
+  },
+  {
+    "task_id": "manual-share",
+    "arm": "search-first",
+    "task_sha256": "deea1419232503c3257c732c29d66fab207c17caecc40caa4f106d3dd77f438c",
+    "instructions_sha256": "e97cbd7cf3e472952b241bfe4d73217d94df6ac24dd3b491e50c0334dc9e01df",
+    "elapsed_seconds": 10.362,
+    "exit_code": 0,
+    "timed_out": false,
+    "is_error": false,
+    "subtype": "success",
+    "answer": "**Recommendation: keep the current flow for now; run one cheap proof this week.**\n\n**Feasibility (from evidence only)**\n- Full automation is blocked twice over. E1: the Basic API cannot create shares, so no amount of local code produces a share link. E4: the local app has no provider token, so it could not call the API even if the plan allowed it. Two independent blockers, either one fatal.\n- E2 (Advanced plan has share-creation API) is the only unblocking path, but price and regional eligibility are unverified, and E3 means no approval today. So the upgrade is not a decision available this week.\n- E5 (blog claiming full automation) states no plan details. It most likely assumes a paid tier; treat as unsupported until matched against vendor docs. Do not let it set expectations.\n\n**Status quo**\nManual browser sharing (E1) works. The real cost is repeated logins and per-client copy/paste \u2014 annoying, but not blocking delivery. Keeping it costs nothing and forecloses nothing.\n\n**Smallest next proof (no accounts, writes, signups, or purchase)**\nUse E4's one capability that needs no token: have the local app track requested recipients and handoff status. For ~10 real client sends, record recipient, timestamp, and manual-step count. This yields two things you cannot get by arguing: a measured per-client minute cost to put in front of the owner (E3), and a half-automated flow where the app queues and tracks while a human pastes the link.\n\n**In parallel, verify on paper only:** read vendor pricing/docs for Advanced-tier share-creation scope, cost, and regional availability \u2014 closing E2's gap without spending.",
+    "cost_usd": 0.022101,
+    "model_usage": {
+      "claude-opus-5": {
+        "inputTokens": 2,
+        "outputTokens": 599,
+        "cacheReadInputTokens": 2272,
+        "cacheCreationInputTokens": 598,
+        "webSearchRequests": 0,
+        "costUSD": 0.022101,
+        "contextWindow": 1000000,
+        "maxOutputTokens": 64000,
+        "thinkingTokens": 60,
+        "canonicalModel": "claude-opus-5",
+        "provider": "firstParty",
+        "costBasis": "list"
+      }
+    }
+  },
+  {
+    "task_id": "typo",
+    "arm": "none",
+    "task_sha256": "8b4c5c548e1097ff5c06a2c524b0f7867bff63cb98a83decdc6dc62ea9f79ed5",
+    "instructions_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "elapsed_seconds": 1.883,
+    "exit_code": 0,
+    "timed_out": false,
+    "is_error": false,
+    "subtype": "success",
+    "answer": "Save changes",
+    "cost_usd": 0.002665,
+    "model_usage": {
+      "claude-opus-5": {
+        "inputTokens": 503,
+        "outputTokens": 6,
+        "cacheReadInputTokens": 0,
+        "cacheCreationInputTokens": 0,
+        "webSearchRequests": 0,
+        "costUSD": 0.002665,
+        "contextWindow": 1000000,
+        "maxOutputTokens": 64000,
+        "thinkingTokens": 0,
+        "canonicalModel": "claude-opus-5",
+        "provider": "firstParty",
+        "costBasis": "list"
+      }
+    }
+  },
+  {
+    "task_id": "typo",
+    "arm": "prior-art-search",
+    "task_sha256": "8b4c5c548e1097ff5c06a2c524b0f7867bff63cb98a83decdc6dc62ea9f79ed5",
+    "instructions_sha256": "25c82ed7076ba930f3564ea6c0408987f2d8ce3f50773d387acb3209325844d0",
+    "elapsed_seconds": 2.918,
+    "exit_code": 0,
+    "timed_out": false,
+    "is_error": false,
+    "subtype": "success",
+    "answer": "Save changes",
+    "cost_usd": 0.005568,
+    "model_usage": {
+      "claude-opus-5": {
+        "inputTokens": 2,
+        "outputTokens": 6,
+        "cacheReadInputTokens": 2436,
+        "cacheCreationInputTokens": 419,
+        "webSearchRequests": 0,
+        "costUSD": 0.005568,
+        "contextWindow": 1000000,
+        "maxOutputTokens": 64000,
+        "thinkingTokens": 0,
+        "canonicalModel": "claude-opus-5",
+        "provider": "firstParty",
+        "costBasis": "list"
+      }
+    }
+  },
+  {
+    "task_id": "typo",
+    "arm": "prior-art",
+    "task_sha256": "8b4c5c548e1097ff5c06a2c524b0f7867bff63cb98a83decdc6dc62ea9f79ed5",
+    "instructions_sha256": "aad55b8db8f798c5cc576e17379d936bc8fa8d079c3008ca461448ffa55f4fa9",
+    "elapsed_seconds": 1.911,
+    "exit_code": 0,
+    "timed_out": false,
+    "is_error": false,
+    "subtype": "success",
+    "answer": "Save changes",
+    "cost_usd": 0.006194,
+    "model_usage": {
+      "claude-opus-5": {
+        "inputTokens": 2,
+        "outputTokens": 6,
+        "cacheReadInputTokens": 3688,
+        "cacheCreationInputTokens": 419,
+        "webSearchRequests": 0,
+        "costUSD": 0.006194,
+        "contextWindow": 1000000,
+        "maxOutputTokens": 64000,
+        "thinkingTokens": 0,
+        "canonicalModel": "claude-opus-5",
+        "provider": "firstParty",
+        "costBasis": "list"
+      }
+    }
+  },
+  {
+    "task_id": "typo",
+    "arm": "search-first",
+    "task_sha256": "8b4c5c548e1097ff5c06a2c524b0f7867bff63cb98a83decdc6dc62ea9f79ed5",
+    "instructions_sha256": "e97cbd7cf3e472952b241bfe4d73217d94df6ac24dd3b491e50c0334dc9e01df",
+    "elapsed_seconds": 1.837,
+    "exit_code": 0,
+    "timed_out": false,
+    "is_error": false,
+    "subtype": "success",
+    "answer": "Save changes",
+    "cost_usd": 0.005486,
+    "model_usage": {
+      "claude-opus-5": {
+        "inputTokens": 2,
+        "outputTokens": 6,
+        "cacheReadInputTokens": 2272,
+        "cacheCreationInputTokens": 419,
+        "webSearchRequests": 0,
+        "costUSD": 0.005486,
+        "contextWindow": 1000000,
+        "maxOutputTokens": 64000,
+        "thinkingTokens": 0,
+        "canonicalModel": "claude-opus-5",
+        "provider": "firstParty",
+        "costBasis": "list"
+      }
+    }
+  }
+]

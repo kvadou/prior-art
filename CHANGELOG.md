@@ -1,5 +1,20 @@
 # Changelog
 
+## 0.5.0, 2026-09-20
+
+- Published a12-response tool-free comparison and two installed-skill routing smokes.
+  No performance advantage established; real responses, synthetic scenarios.
+- Tightened unsupported account and timing inference after observing a pilot failure.
+
+- Explicit local-first order: previous decisions, current code/tests, installed tools,
+  package capabilities, then public alternatives, with freshness/applicability checks.
+- Short decision-first reports: recommendation, evidence, limitation and next check
+  before supporting detail. Trivial work does not require a research ceremony.
+- Repeated-workaround trigger with an explicit keep-current option and recurring
+  operating cost, maintenance and migration comparisons.
+- Comparative pilot plan and private review template. This entry makes no claim
+  that a pilot has run or that these changes improve measured outcomes.
+
 ## 0.4.0, 2026-09-20
 
 - Practical feasibility checkpoint: account eligibility, APIs, permissions, human

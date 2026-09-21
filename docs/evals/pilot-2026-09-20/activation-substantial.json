@@ -1,0 +1,31 @@
+{
+  "id": "substantial",
+  "prompt": "We need to choose an existing retry solution for a substantial new Node24 integration. Review available prior implementations and produce a recommendation before building. Fixture evidence: our installed retryRead helper handles408/429/503 and never retries writes; ADR selected it and constraints are unchanged; popular new package requiresNode26. No network tools are available, so report external coverage limitations. Do not change any files. Keep final under150words.",
+  "exit_code": 0,
+  "elapsed_seconds": 15.213,
+  "tool_calls": [
+    {
+      "name": "Skill",
+      "skill": "prior-art:prior-art"
+    },
+    {
+      "name": "Read"
+    },
+    {
+      "name": "Read"
+    },
+    {
+      "name": "Read"
+    },
+    {
+      "name": "Read"
+    }
+  ],
+  "success": true,
+  "result": "## Recommendation: KEEP `retryRead`\n\n**Mode:** Brownfield, Quick profile \u2014 an incumbent plus an unchanged ADR ends the search early.\n\n**Strongest evidence:** The ADR selected `retryRead` and its constraints are unchanged; the helper already covers 408/429/503 and never retries non-idempotent writes, which is the main correctness risk in retry layers. The popular alternative requires Node 26 and is disqualified on Node 24 \u2014 a hard compatibility gate, not a preference.\n\n**Material limitations:**\n- No network tools, so external coverage (registry, issue history, alternative libraries, CVEs) is **NOT SEARCHED**, not \"absent.\" Popularity claims are unverified.\n- My available tools couldn't locate the helper or ADR on disk, so both rest on your fixture statements as **UNVERIFIED**, not read evidence. No files changed.\n\n**Next check:** Open the helper and ADR paths and confirm the 408/429/503 set plus write-exclusion have executable tests before the integration depends on them.",
+  "cost_usd": 0.128211,
+  "models": [
+    "claude-opus-5"
+  ],
+  "error": null
+}

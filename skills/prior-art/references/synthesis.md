@@ -9,6 +9,10 @@ the outcome and cannot be resolved within existing authorization.
 
 Use one row per relevant decision, not per fashionable feature. Include our
 constraints, alternatives, source observations, contrary evidence and evidence gaps.
+For an existing system, include keeping the current approach as an explicit option.
+Compare recurring human handoffs, maintenance/on-call effort, provider/dependency
+costs, migration and rollback work, and expected benefit. Mark unmeasured effort or
+cost unknown; do not turn a workaround count into an automatic replacement verdict.
 
 | Decision / reversal cost | Constraint fit | Evidence and ancestry | Status | Recommendation / invariant |
 |---|---|---|---|---|
@@ -50,6 +54,17 @@ than eligibility to copy, deploy or depend on a source.
 
 ## 3. Produce the scoped deliverable
 
+Open every report with a brief decision summary in this order:
+
+1. **Recommendation:** the choice or next bounded decision.
+2. **Evidence:** the strongest applicable observation with a precise citation.
+3. **Limitation:** the uncertainty or constraint most likely to change the choice.
+4. **Next check:** the smallest concrete verification, or an explicit review trigger
+   if no further work is justified. Do not manufacture another task to fill the slot.
+
+Put matrices, search traces and other supporting detail after that summary. A short
+answer may be the complete deliverable for a small decision.
+
 For greenfield work, deliver a foundation: verdict (ADOPT / FORK / ADAPT-PATTERNS /
 BUILD), alternatives, proposed contracts/schema where relevant, explicit invariants,
 rejected patterns and reasons, the product's distinct core, and reuse obligations.
@@ -69,6 +84,13 @@ facts irrelevant to the authorized build. A research recommendation is not proof
 that an implementation already satisfies it.
 
 ## 4. Deliver and preserve
+
+Follow a local-first evidence ladder: prior decisions/research, current code/tests,
+installed tools/configured integrations, package/dependency capabilities, then public
+alternatives. Recheck applicability, versions and actual access before relying on an
+old record. Explain skipped stages briefly when relevant; do not require an audit of
+every installed package. A repeated workaround warrants investigating its cause,
+not automatically changing a working system.
 
 Verify citations against opened sources and our actual code. Explain conflicts,
 unknowns, incomplete coverage, budget stops and shallow-history limits. Never turn a

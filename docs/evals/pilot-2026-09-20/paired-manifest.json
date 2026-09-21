@@ -1,0 +1,110 @@
+{
+  "schema_version": 1,
+  "synthetic": false,
+  "baseline_revision": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+  "candidate_revision": "aad55b8db8f798c5cc576e17379d936bc8fa8d079c3008ca461448ffa55f4fa9",
+  "pairs": [
+    {
+      "id": "existing-helper",
+      "task": "Implement retry for a Node app's transient reads. First recommend the smallest change and a verification check; do not write code. Available evidence: E1 local src/retry.ts already exports retryRead(operation,{maxAttempts,backoffMs}); tests prove maxAttempts includes first call, retry only408/429/503, never retry mutations. E2 previous ADR selected that helper; workload and version unchanged. E3 public popular package has more retry features but requires Node26; project pinned Node24. E4 registry search failed with timeout; no evidence about other packages. Outcome must fit current project. State what to use, evidence, uncertainty, next check. Keep under250words.",
+      "baseline": {
+        "revision": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "output": "runs.json task=existing-helper arm=none",
+        "conditions": {
+          "task_sha256": "46614e530ac944a687b9ec700159ea2c857a85773bffa5f1c92a9ae9fb21302e",
+          "model": "claude-opus-5 medium",
+          "runtime": "Claude Code2.1.278 fresh process, custom system, no tools/skills/hooks/MCP",
+          "tools": [],
+          "source_snapshot": "tasks.json sha256:ccf591f2e586259061635405cac9d54037d3be8c6158788484c8911f6831b187",
+          "budget": "90seconds and$0.50 per session"
+        },
+        "cost_usd": 0.0206,
+        "elapsed_seconds": 9.324,
+        "human_review": null
+      },
+      "candidate": {
+        "revision": "aad55b8db8f798c5cc576e17379d936bc8fa8d079c3008ca461448ffa55f4fa9",
+        "output": "runs.json task=existing-helper arm=prior-art",
+        "conditions": {
+          "task_sha256": "46614e530ac944a687b9ec700159ea2c857a85773bffa5f1c92a9ae9fb21302e",
+          "model": "claude-opus-5 medium",
+          "runtime": "Claude Code2.1.278 fresh process, custom system, no tools/skills/hooks/MCP",
+          "tools": [],
+          "source_snapshot": "tasks.json sha256:ccf591f2e586259061635405cac9d54037d3be8c6158788484c8911f6831b187",
+          "budget": "90seconds and$0.50 per session"
+        },
+        "cost_usd": 0.05746,
+        "elapsed_seconds": 10.465,
+        "human_review": null
+      }
+    },
+    {
+      "id": "manual-share",
+      "task": "Our small team's document-sharing integration requires repeated logins and a manual copy/paste for every client. Recommend whether to keep it or change it. Available evidence: E1 current Basic account allows manual browser sharing, but its API cannot create shares. E2 vendor Advanced plan offers API-created shares; price and regional eligibility not verified. E3 our owner cannot approve an upgrade today. E4 local app can securely track requested recipients and handoff status, but has no provider token. E5 blog claims full automation with no plan details. Evaluate actual feasibility, status quo and smallest next proof. No accounts, external writes, signups or purchase are authorized. Keep under250words.",
+      "baseline": {
+        "revision": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "output": "runs.json task=manual-share arm=none",
+        "conditions": {
+          "task_sha256": "deea1419232503c3257c732c29d66fab207c17caecc40caa4f106d3dd77f438c",
+          "model": "claude-opus-5 medium",
+          "runtime": "Claude Code2.1.278 fresh process, custom system, no tools/skills/hooks/MCP",
+          "tools": [],
+          "source_snapshot": "tasks.json sha256:ccf591f2e586259061635405cac9d54037d3be8c6158788484c8911f6831b187",
+          "budget": "90seconds and$0.50 per session"
+        },
+        "cost_usd": 0.02096,
+        "elapsed_seconds": 10.117,
+        "human_review": null
+      },
+      "candidate": {
+        "revision": "aad55b8db8f798c5cc576e17379d936bc8fa8d079c3008ca461448ffa55f4fa9",
+        "output": "runs.json task=manual-share arm=prior-art",
+        "conditions": {
+          "task_sha256": "deea1419232503c3257c732c29d66fab207c17caecc40caa4f106d3dd77f438c",
+          "model": "claude-opus-5 medium",
+          "runtime": "Claude Code2.1.278 fresh process, custom system, no tools/skills/hooks/MCP",
+          "tools": [],
+          "source_snapshot": "tasks.json sha256:ccf591f2e586259061635405cac9d54037d3be8c6158788484c8911f6831b187",
+          "budget": "90seconds and$0.50 per session"
+        },
+        "cost_usd": 0.024558999999999997,
+        "elapsed_seconds": 11.228,
+        "human_review": null
+      }
+    },
+    {
+      "id": "typo",
+      "task": "Correct only the typo in this provided UI label: 'Save chnages'. Return the corrected label. No research or extra explanation is needed.",
+      "baseline": {
+        "revision": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "output": "runs.json task=typo arm=none",
+        "conditions": {
+          "task_sha256": "8b4c5c548e1097ff5c06a2c524b0f7867bff63cb98a83decdc6dc62ea9f79ed5",
+          "model": "claude-opus-5 medium",
+          "runtime": "Claude Code2.1.278 fresh process, custom system, no tools/skills/hooks/MCP",
+          "tools": [],
+          "source_snapshot": "tasks.json sha256:ccf591f2e586259061635405cac9d54037d3be8c6158788484c8911f6831b187",
+          "budget": "90seconds and$0.50 per session"
+        },
+        "cost_usd": 0.002665,
+        "elapsed_seconds": 1.883,
+        "human_review": null
+      },
+      "candidate": {
+        "revision": "aad55b8db8f798c5cc576e17379d936bc8fa8d079c3008ca461448ffa55f4fa9",
+        "output": "runs.json task=typo arm=prior-art",
+        "conditions": {
+          "task_sha256": "8b4c5c548e1097ff5c06a2c524b0f7867bff63cb98a83decdc6dc62ea9f79ed5",
+          "model": "claude-opus-5 medium",
+          "runtime": "Claude Code2.1.278 fresh process, custom system, no tools/skills/hooks/MCP",
+          "tools": [],
+          "source_snapshot": "tasks.json sha256:ccf591f2e586259061635405cac9d54037d3be8c6158788484c8911f6831b187",
+          "budget": "90seconds and$0.50 per session"
+        },
+        "cost_usd": 0.006194,
+        "elapsed_seconds": 1.911,
+        "human_review": null
+      }
+    }
+  ]
+}

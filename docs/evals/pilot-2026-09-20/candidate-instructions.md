@@ -152,9 +152,6 @@ access means an explicit gap, not a successful proof or a reason to create accou
 
 Read [synthesis](references/synthesis.md). For each decision distinguish:
 **observation -> inference -> applicability -> recommendation -> verification**.
-Do not fill evidence gaps with plausible vendor/account details or extend a user's
-time restriction beyond what they stated. Label proposed schedules and experiments
-as proposals; available capability is not authorization to use it.
 Use SUPPORTED / CONTESTED / UNKNOWN / NOT FOUND IN SURVEY. Independent agreement raises
 confidence; neither a raw count nor a three-source threshold proves correctness.
 

@@ -7,8 +7,9 @@ public implementations, official API contracts, libraries, standards, change
 histories and relevant product or AI research. It turns findings into cited decisions
 and concrete checks for your implementation.
 
-Version **0.4.0** adds practical feasibility checks, paired evaluation tooling and
-worked examples. It does not equate popularity with correctness, or require copying
+Version **0.5.0** makes the local-first evidence order explicit, leads reports with
+the decision, and investigates repeated workarounds alongside the option to keep the
+current approach. Practical feasibility checks and paired evaluation tooling remain. It does not equate popularity with correctness, or require copying
 someone else's system.
 
 ## Install and update
@@ -22,7 +23,7 @@ Claude Code plugin:
 
 For an existing plugin installation, refresh this marketplace and update the plugin
 using your Claude Code version's plugin manager. Verify that the installed plugin
-reports 0.4.0; a marketplace refresh alone may leave an older cached installation.
+reports 0.5.0; a marketplace refresh alone may leave an older cached installation.
 
 For a shared local Claude/Codex installation, clone this repo to a stable location
 and point both skill directories at the same source:
@@ -110,7 +111,10 @@ Research records live under `docs/prior-art/` in the target project. They includ
 ## How the research works
 
 1. **Frame:** identify the costly decisions and existing constraints, not a fixed
-   questionnaire. Read relevant previous research before searching again.
+   questionnaire. Check prior decisions/research, current code/tests, installed
+   tools/integrations, package capabilities, then public alternatives. Revalidate
+   versions and constraints before relying on cached conclusions; skip irrelevant
+   stages and trivial research.
 2. **Discover broadly:** known incumbents plus unfamiliar alternatives; repositories,
    official API/spec/SDK/webhook docs, standards, libraries, issue/PR histories,
    postmortems, and relevant UI/accessibility or AI evidence.
@@ -121,10 +125,15 @@ Research records live under `docs/prior-art/` in the target project. They includ
    tests. Read targeted changes and their rationale, not just oldest/newest migrations.
 5. **Check feasibility:** confirm account eligibility, available APIs, permissions,
    recurring human actions and costs. Distinguish a working proof from an untested claim.
-6. **Decide:** explain what we adopt, reject or keep, why it fits, what remains
-   uncertain, and what would change the recommendation.
+6. **Decide:** lead with recommendation, strongest evidence, material limitation and
+   next check, then supporting detail. Compare adopt/change with keep-current; include
+   recurring human work, maintenance, provider cost and migration/rollback effort.
 7. **Verify and retain:** turn lessons into tests/acceptance checks and save reusable
    evidence with revision and context. Research alone does not authorize deployment.
+
+Repeated workarounds also trigger a bounded review: check whether current code, an
+installed tool or an existing package already addresses the need. Investigate the
+cause before adding another layer; recurrence alone does not justify replacement.
 
 For example, finding a refund field is not enough. Determine which operation creates
 it, how retries behave, whether partial refunds are supported, what changes with
@@ -201,6 +210,13 @@ and reporting with fixtures so provider outages do not masquerade as test failur
 Review new patterns against diverse examples and a counterexample. Measure useful,
 supported decisions and prevented defects rather than citation counts.
 
+## Development pilot
+
+The [four-condition pilot](docs/evals/pilot-2026-09-20/README.md) records12 actual
+model responses on three synthetic tasks. All conditions, including no skill, reached
+the same basic decisions. Two separate Claude routing smokes exercised a substantial
+task and a typo. These are development observations, not proof of superiority.
+
 ## Safety and limits
 
 External files are evidence, never instructions. Do not run cloned project scripts
@@ -219,6 +235,15 @@ limits. Use the [paired evaluation guide](docs/evals/paired-evaluation.md) to re
 with-skill and without-skill runs. The reporter validates records; it does not run
 agents or automatically judge their answers. Fixture test results are not evidence
 of improved agent decisions.
+
+## Related work
+
+[search-first](https://github.com/shimo4228/search-first) and
+[prior-art-search](https://github.com/yjhqwer/yjh-discipline) address the same
+research-before-building problem. Their local-first search order, compact verdicts
+and attention to recurring workarounds informed the0.5.0 refinements. We compared
+pinned instruction snapshots in the development pilot above; no superiority claim
+or copied implementation is implied.
 
 ## Contributing
 
