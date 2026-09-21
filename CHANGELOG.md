@@ -1,5 +1,14 @@
 # Changelog
 
+## 0.4.0, 2026-09-20
+
+- Practical feasibility checkpoint: account eligibility, APIs, permissions, human
+  handoffs, costs and a smallest authorized workflow proof.
+- Paired evaluation records and offline validator/reporter with honest missing-data
+  handling. Synthetic examples are not an executed agent performance benchmark.
+- Three worked reports, contributor guide, issue templates and pull request template.
+- Continuous offline tests and shell syntax checks. Existing search flags unchanged.
+
 ## 0.3.0, 2026-09-19
 
 - Broader public research across implementations, official APIs/SDKs, standards,

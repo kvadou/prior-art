@@ -50,7 +50,7 @@ than eligibility to copy, deploy or depend on a source.
 
 ## 3. Produce the scoped deliverable
 
-For greenfield work, deliver a foundation: verdict (ADOPT / FORK / STEAL-PATTERNS /
+For greenfield work, deliver a foundation: verdict (ADOPT / FORK / ADAPT-PATTERNS /
 BUILD), alternatives, proposed contracts/schema where relevant, explicit invariants,
 rejected patterns and reasons, the product's distinct core, and reuse obligations.
 Do not force schema output for a UX, algorithm, AI evaluation or operations question.

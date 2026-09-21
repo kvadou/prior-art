@@ -1,6 +1,6 @@
 {
   "name": "prior-art",
-  "version": "0.3.0",
+  "version": "0.4.0",
   "description": "Broad public research before building: repositories, official APIs, standards and lessons from real implementations, turned into cited decisions and verification checks.",
   "author": {
     "name": "Doug Kvamme"

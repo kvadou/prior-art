@@ -32,6 +32,8 @@ the research question is answered. Record both when needed.
 - **Fits us because:** user/data/scale/security/operational constraints.
 - **Recommendation:** adopt dependency / adapt pattern / implement / keep / defer.
 - **Alternatives rejected:** concrete tradeoff, not popularity.
+- **Feasibility (when relevant):** demonstrated / documented but untested / blocked /
+  unknown; account/runtime constraints, human handoffs, costs, smallest proof and result.
 - **Implementation seam:** file, function, contract, migration or interface flow.
 - **Verification:** invariant/test, acceptance check or experiment and expected result.
 - **Unresolved:** what evidence would change the recommendation; owner if known.

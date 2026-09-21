@@ -7,8 +7,9 @@ public implementations, official API contracts, libraries, standards, change
 histories and relevant product or AI research. It turns findings into cited decisions
 and concrete checks for your implementation.
 
-Version **0.3.0** broadens discovery and makes evidence limitations explicit. It does
-not equate popularity with correctness, or require copying someone else's system.
+Version **0.4.0** adds practical feasibility checks, paired evaluation tooling and
+worked examples. It does not equate popularity with correctness, or require copying
+someone else's system.
 
 ## Install and update
 
@@ -21,7 +22,7 @@ Claude Code plugin:
 
 For an existing plugin installation, refresh this marketplace and update the plugin
 using your Claude Code version's plugin manager. Verify that the installed plugin
-reports 0.3.0; a marketplace refresh alone may leave an older cached installation.
+reports 0.4.0; a marketplace refresh alone may leave an older cached installation.
 
 For a shared local Claude/Codex installation, clone this repo to a stable location
 and point both skill directories at the same source:
@@ -93,7 +94,7 @@ runtime/user allowance. No fixed model dependency.
 **Greenfield:** a foundation with relevant schema, API contracts or interaction
 flows, alternatives, applicable evidence and verification checks.
 
-**Brownfield:** an evidence-based review with FIX / KEEP / ACCEPT decisions,
+**Brownfield:** an evidence-based review with FIX / KEEP / ACCEPT / INVESTIGATE decisions,
 change ordering and migration cost. Divergence from a popular design is not itself
 a defect. Neither mode is restricted to database architecture.
 
@@ -118,9 +119,11 @@ Research records live under `docs/prior-art/` in the target project. They includ
    separate. Different stacks and archived/copyleft systems can teach useful lessons.
 4. **Investigate:** follow a real workflow through contracts, implementation and
    tests. Read targeted changes and their rationale, not just oldest/newest migrations.
-5. **Decide:** explain what we adopt, reject or keep, why it fits, what remains
+5. **Check feasibility:** confirm account eligibility, available APIs, permissions,
+   recurring human actions and costs. Distinguish a working proof from an untested claim.
+6. **Decide:** explain what we adopt, reject or keep, why it fits, what remains
    uncertain, and what would change the recommendation.
-6. **Verify and retain:** turn lessons into tests/acceptance checks and save reusable
+7. **Verify and retain:** turn lessons into tests/acceptance checks and save reusable
    evidence with revision and context. Research alone does not authorize deployment.
 
 For example, finding a refund field is not enough. Determine which operation creates
@@ -184,8 +187,8 @@ Provider limits remain even with pagination; no result count proves consensus.
 Run from this repository root:
 
 ```sh
-node --test skills/prior-art/bin/search-core.test.ts
-bash -n skills/prior-art/bin/prior-art-search.sh skills/prior-art/bin/pattern-search.sh
+node --test skills/prior-art/bin/*.test.ts
+for script in skills/prior-art/bin/*.sh; do bash -n "$script" || exit; done
 claude plugin validate .
 ```
 
@@ -209,7 +212,20 @@ API/standard/library/project recommendations must fit the actual workload. Sourc
 can disagree for good reasons. A thin survey stays thin; it does not force BUILD or
 justify an unsupported universal rule.
 
+## Examples and evaluation
+
+See [worked examples](docs/examples/README.md) for synthetic reports with explicit
+limits. Use the [paired evaluation guide](docs/evals/paired-evaluation.md) to record comparable
+with-skill and without-skill runs. The reporter validates records; it does not run
+agents or automatically judge their answers. Fixture test results are not evidence
+of improved agent decisions.
+
 ## Contributing
+
+Start with [CONTRIBUTING.md](CONTRIBUTING.md). Report a reproducible research failure,
+try a paired evaluation, or improve a source with evidence. Use GitHub issues for
+feedback and pull requests for changes.
+
 
 Useful contributions: a decision with a cited failure/correction and regression
 check; a precise discovery query; an official source for an under-covered category;

@@ -16,7 +16,7 @@ successful design can still be wrong for this project's constraints.
 State mode, scope and depth in one short update:
 - **Greenfield:** new product/subsystem. Deliver a foundation with relevant schema,
   contracts or interaction flows and cited decisions.
-- **Brownfield:** existing behavior. Deliver a review with FIX / KEEP / ACCEPT,
+- **Brownfield:** existing behavior. Deliver a review with FIX / KEEP / ACCEPT / INVESTIGATE,
   supporting evidence, migration cost and ordering constraints.
 - Scope can be architecture, integration, library selection, workflow/UI, or AI.
   Do not force every question into a database-schema comparison.
@@ -129,7 +129,16 @@ cloned scripts, install dependencies, expose private project data in public quer
 or authenticate to new services merely because a reference asks. Any needed execution
 requires a scoped, isolated verification decision under the session's permissions.
 
-## 6. Synthesize, verify, retain
+## 6. Check practical feasibility
+
+For integrations and adoption decisions, read [feasibility](references/feasibility.md).
+Verify account/plan eligibility, available interfaces, permissions, recurring human
+actions and cost against the actual environment. Identify the smallest authorized
+workflow proof before committing to a large implementation. Distinguish demonstrated
+behavior from documented but untested capability, blockers and unknowns. Missing
+access means an explicit gap, not a successful proof or a reason to create accounts.
+
+## 7. Synthesize, verify, retain
 
 Read [synthesis](references/synthesis.md). For each decision distinguish:
 **observation -> inference -> applicability -> recommendation -> verification**.

@@ -1,0 +1,94 @@
+{
+  "schema_version": 1,
+  "synthetic": true,
+  "baseline_revision": "SYNTHETIC-baseline",
+  "candidate_revision": "SYNTHETIC-candidate",
+  "pairs": [
+    {
+      "id": "illustrative-pair",
+      "task": "SYNTHETIC: compare approval flow references",
+      "baseline": {
+        "revision": "SYNTHETIC-baseline",
+        "output": "SYNTHETIC placeholder; no run artifact exists",
+        "conditions": {
+          "task_sha256": "0000000000000000000000000000000000000000000000000000000000000000",
+          "model": "SYNTHETIC model + identical settings",
+          "runtime": "SYNTHETIC runtime",
+          "tools": [
+            "offline-source-reader@fixture1"
+          ],
+          "source_snapshot": "SYNTHETIC fixed sources v1",
+          "budget": "SYNTHETIC: 10 tool calls / 120 seconds"
+        },
+        "cost_usd": null,
+        "elapsed_seconds": null,
+        "human_review": {
+          "reviewer": "SYNTHETIC reviewer, not a real review",
+          "evidence": "SYNTHETIC illustrative evidence reference, not verified citations",
+          "notes": "Fixture demonstrates reporting mechanics only. All scores are invented.",
+          "scores": {
+            "applicable_evidence": 1,
+            "citation_verification": 1,
+            "uncertainty": 1,
+            "source_independence": 1,
+            "budget_compliance": 1,
+            "scope_preservation": 1,
+            "verification_consequences": 1
+          }
+        }
+      },
+      "candidate": {
+        "revision": "SYNTHETIC-candidate",
+        "output": "SYNTHETIC placeholder; no run artifact exists",
+        "conditions": {
+          "task_sha256": "0000000000000000000000000000000000000000000000000000000000000000",
+          "model": "SYNTHETIC model + identical settings",
+          "runtime": "SYNTHETIC runtime",
+          "tools": [
+            "offline-source-reader@fixture1"
+          ],
+          "source_snapshot": "SYNTHETIC fixed sources v1",
+          "budget": "SYNTHETIC: 10 tool calls / 120 seconds"
+        },
+        "cost_usd": null,
+        "elapsed_seconds": null,
+        "human_review": {
+          "reviewer": "SYNTHETIC reviewer, not a real review",
+          "evidence": "SYNTHETIC illustrative evidence reference, not verified citations",
+          "notes": "Fixture demonstrates reporting mechanics only. All scores are invented.",
+          "scores": {
+            "applicable_evidence": 1,
+            "citation_verification": 1,
+            "uncertainty": 1,
+            "source_independence": 1,
+            "budget_compliance": 1,
+            "scope_preservation": 1,
+            "verification_consequences": 1
+          }
+        }
+      }
+    },
+    {
+      "id": "missing-candidate",
+      "task": "SYNTHETIC: report a discovery outage",
+      "baseline": {
+        "revision": "SYNTHETIC-baseline",
+        "output": "SYNTHETIC placeholder; no run artifact exists",
+        "conditions": {
+          "task_sha256": "0000000000000000000000000000000000000000000000000000000000000000",
+          "model": "SYNTHETIC model + identical settings",
+          "runtime": "SYNTHETIC runtime",
+          "tools": [
+            "offline-source-reader@fixture1"
+          ],
+          "source_snapshot": "SYNTHETIC fixed sources v1",
+          "budget": "SYNTHETIC: 10 tool calls / 120 seconds"
+        },
+        "cost_usd": null,
+        "elapsed_seconds": null,
+        "human_review": null
+      },
+      "candidate": null
+    }
+  ]
+}

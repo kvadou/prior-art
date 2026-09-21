@@ -1,0 +1,23 @@
+name: Offline checks
+on:
+  push:
+    branches: [main]
+  pull_request:
+permissions:
+  contents: read
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        node: ['22.18.0', '24']
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: ${{ matrix.node }}
+      - run: node --test skills/prior-art/bin/*.test.ts
+      - name: Shell syntax
+        run: for script in skills/prior-art/bin/*.sh; do bash -n "$script" || exit; done
+      - name: Latest commit whitespace
+        run: git show --format= --check HEAD
