@@ -1,6 +1,6 @@
 ---
 name: prior-art
-description: Research existing implementations and public technical evidence before building or substantially extending a system. Compare repositories, official API contracts, libraries, standards, issue/PR histories and relevant UX or AI research. Produce a cited foundation or an evidence-based review of an existing implementation, with decisions and verification checks. Use for prior-art requests, build-vs-adopt choices, architecture comparisons, and substantial new features in established categories. Also use when repeated workarounds suggest an existing capability or design mismatch. Scale down or skip research for trivial reversible changes.
+description: Research existing implementations and public technical evidence before building or substantially extending a system. Compare repositories, official API contracts, libraries, standards, issue/PR histories and relevant UX or AI research, including observed interfaces and interaction flows for substantial UI work. Produce a cited foundation or an evidence-based review of an existing implementation, with decisions and verification checks. Use for prior-art requests, build-vs-adopt choices, architecture comparisons, and substantial new features in established categories. Also use when repeated workarounds suggest an existing capability or design mismatch. Scale down or skip research for trivial reversible changes.
 ---
 
 # Prior Art
@@ -20,6 +20,10 @@ State mode, scope and depth in one short update:
   supporting evidence, migration cost and ordering constraints.
 - Scope can be architecture, integration, library selection, workflow/UI, or AI.
   Do not force every question into a database-schema comparison.
+- For substantial UI/workflow work, read [product-experience](references/product-experience.md).
+  Study real tasks, retain annotated visual/interaction evidence, and use the
+  [design handoff](references/design-handoff.md) before an authorized rebuild.
+  Backend-only work can skip this track.
 
 Use this local-first order, stopping when the decision is adequately supported:
 previous decisions and research -> current code and tests -> installed tools and
@@ -40,6 +44,9 @@ technical questions that public evidence can answer.
 If a planning tool exists and fits the task, use it. Otherwise present a brief plan
 in the conversation; never require an unavailable tool or simulate a tool call.
 Write the research plan for substantial work before expensive search/deep reads.
+Before a substantial build, map the requested outcome to existing and missing
+capabilities, planned phases and acceptance checks. Make proposed deferrals explicit
+before implementation; a research ceiling does not reduce the user's requested scope.
 A research request ends with recommendations; an authorized build continues into
 implementation using the findings. Research alone does not authorize a deployment.
 
@@ -81,7 +88,9 @@ families rather than filling them with irrelevant citations.
 - Official API/OpenAPI/GraphQL contracts, SDKs, webhooks, exports and changelogs.
 - Domain standards, established libraries and reference implementations.
 - Issue/PR discussions, regression tests, architecture decisions and postmortems.
-- Relevant product workflows, accessibility/design-system guidance for UI work.
+- Relevant product workflows, observed screens/demos, design artifacts and
+  accessibility/design-system guidance for UI work. Distinguish interaction evidence
+  from static images; use an [annotated reference board](references/reference-board.md).
 - Papers, reproducible benchmarks, datasets/model cards for AI/data work.
 
 The scripts assist discovery; they do not cover every family or prove an exhaustive
@@ -173,5 +182,8 @@ pattern record; do not copy private context into a public skill repository.
 
 Stop when high-impact decisions have adequate applicable evidence or explicit gaps,
 relevant source families were covered or explained, and the latest bounded expansion
-adds no material tradeoffs. Report a thin or contradictory survey honestly. Never
+adds no material tradeoffs. For an authorized UI build, recheck the original tasks and capability map against
+the implementation, including visual hierarchy and preserved workflows. Label a
+completed phase separately from an unfinished broader goal.
+Report a thin or contradictory survey honestly. Never
 claim all public information was searched.

@@ -1,5 +1,12 @@
 # Changelog
 
+## 0.6.0, 2026-09-26
+
+- Add conditional product-experience research for substantial UI tasks, with evidence labels for interaction, demos, static references and inference.
+- Add annotated reference-board and design-handoff templates, capability coverage and visible scope deferrals before implementation.
+- Keep private account artifacts local/untracked and use synthetic data in shared designs.
+- Add semantic evaluation scenarios; packaging tests do not establish usability or skill superiority. Existing CLI contracts remain unchanged.
+
 ## 0.5.0, 2026-09-20
 
 - Published a12-response tool-free comparison and two installed-skill routing smokes.

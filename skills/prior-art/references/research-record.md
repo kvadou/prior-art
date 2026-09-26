@@ -66,3 +66,11 @@ Refresh when the upstream version/contract changes, an advisory contradicts it,
 our constraints change, or the next task depends on unverified old behavior. There
 is no universal expiration period. Retain superseded records as history and link
 the newer decision instead of silently rewriting provenance.
+
+## Product-experience extension (when applicable)
+
+Link the annotated reference board and design handoff. Include task sequences,
+interacted/demo/static/inferred evidence labels, private artifact storage location
+without publishing private contents, capability map, proposed deferrals and acceptance
+checks. Record implemented phase versus remaining original goal, actual task results,
+and agent inspection versus user testing. See [product-experience](product-experience.md).

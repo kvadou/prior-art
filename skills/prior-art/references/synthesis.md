@@ -102,3 +102,8 @@ verification implications, owner if known, and review trigger (version change,
 constraint change, incident or explicit review date). Preserve prior rationale and
 link superseding decisions. Do not silently overwrite history or claim ingestion,
 tests, deployment or completion without evidence.
+
+For substantial product UI, use the [design handoff](design-handoff.md) to carry
+technical decisions and visual/interaction evidence into the build. Compare the
+result with the original capability map and real tasks; do not equate a rendered
+screen with completion of the user's broader goal.

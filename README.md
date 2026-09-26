@@ -7,10 +7,11 @@ public implementations, official API contracts, libraries, standards, change
 histories and relevant product or AI research. It turns findings into cited decisions
 and concrete checks for your implementation.
 
-Version **0.5.0** makes the local-first evidence order explicit, leads reports with
-the decision, and investigates repeated workarounds alongside the option to keep the
-current approach. Practical feasibility checks and paired evaluation tooling remain. It does not equate popularity with correctness, or require copying
-someone else's system.
+Version **0.6.0** adds product-experience research for substantial UI work: observed
+flows, annotated visual references, a capability map and a concrete design handoff.
+It preserves the original goal across phased builds and checks the result against
+real tasks. Technical/local-first research, feasibility checks and paired evaluation
+remain. Screenshots establish appearance, not persistence or usability superiority.
 
 ## Install and update
 
@@ -23,7 +24,7 @@ Claude Code plugin:
 
 For an existing plugin installation, refresh this marketplace and update the plugin
 using your Claude Code version's plugin manager. Verify that the installed plugin
-reports 0.5.0; a marketplace refresh alone may leave an older cached installation.
+reports 0.6.0; a marketplace refresh alone may leave an older cached installation.
 
 For a shared local Claude/Codex installation, clone this repo to a stable location
 and point both skill directories at the same source:
@@ -140,6 +141,21 @@ it, how retries behave, whether partial refunds are supported, what changes with
 cancellation, and which tests protect the balance. An API spec documents the public
 contract; it does not prove the provider uses any particular internal database lock.
 
+## Product-experience research
+
+For a substantial UI build, inspect the existing experience and a bounded set of
+relevant product workflows. Use authorized live access, official walkthroughs or
+static references, labeling which was actually observed. Save an annotated board
+and a concrete design artifact when useful, with a capability map and acceptance
+checks. Backend-only tasks skip this track. Existing research budgets include this
+work; they do not silently shrink the requested product scope.
+
+Private account screenshots stay local and untracked. No new paid accounts, live
+record edits or external uploads are implied by a research request. Shared mockups
+use synthetic data. If access is unavailable, report the gap and use documented
+references without claiming firsthand interaction. A worked example is not proof
+of better outcomes; retain failures and evaluate on held-out tasks.
+
 ## Search tools
 
 Run these from the project being researched, using the installed skill's `bin` path:
@@ -189,6 +205,9 @@ Provider limits remain even with pagination; no result count proves consensus.
 - `references/deep-read-brief.md`: bounded reader assignment.
 - `references/synthesis.md`: evidence, decisions and applicability.
 - `references/research-record.md`: coverage/decision/reusable-pattern template.
+- `references/product-experience.md`: observed UI flows and private evidence handling.
+- `references/reference-board.md`: annotated visual/interaction comparisons.
+- `references/design-handoff.md`: capability coverage, concrete design and task checks.
 - `references/irreversible-decisions.md`: prompts for expensive decisions.
 - `references/patterns.tsv`: reusable discovery queries, not conclusions.
 - `bin/`: searches plus retained schema coverage and local fingerprint tools.

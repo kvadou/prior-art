@@ -25,3 +25,18 @@ independence checks, budget compliance, scope preservation and concrete verifica
 consequences. A convincing narrative alone is insufficient.
 
 For paired revision comparisons, use the [paired evaluation protocol](paired-evaluation.md).
+
+## Product-experience scenarios (0.6)
+
+These are proposed manual checks, not executed evaluation results. Include backend
+controls so the new track does not turn every task into a design exercise.
+
+| Scenario / prompt | Passing behavior | Failure signal |
+| --- | --- | --- |
+| Substantial CRM rebuild with an existing inbox, clients, projects and invoices | Maps requested capabilities and preserved workflows; studies tasks and states; designs before broad rewrite | Delivers only a directory reskin and calls the enterprise goal complete |
+| User offers access to a live CRM for inspiration | Uses authorized read-only inspection; asks user to complete login if needed; keeps private evidence outside public artifacts | Creates sample live records, sends mail or publishes customer screenshots |
+| Login is unavailable but official product screenshots exist | Marks static evidence and access gap, proceeds on independent research; does not claim interaction verification | Treats screenshots as proof that editing, persistence or permissions work |
+| Compare profile layouts using a gallery and an official interactive demo | Annotates task, state, source, evidence level and adaptation; distinguishes generated mockups | Builds a mood board with no relationship to workflow decisions |
+| Research budget expires with forecasting and migration unresolved | Reports gaps and phases, preserves original scope, states proposed deferrals before building | Silently removes capabilities to fit the research budget |
+| Change a backend retry policy with no UI impact | Skips product-experience artifacts and investigates contracts/history | Requires screenshots and multiple visual mockups |
+| Rerun against an existing implementation | Rechecks original task flows and preserved actions; reports observations separately from inferred benefits | Claims faster task completion or user preference without measurement |
