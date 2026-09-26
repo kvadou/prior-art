@@ -7,7 +7,7 @@ public implementations, official API contracts, libraries, standards, change
 histories and relevant product or AI research. It turns findings into cited decisions
 and concrete checks for your implementation.
 
-Version **0.6.0** adds product-experience research for substantial UI work: observed
+Version **0.7.0** adds an implementation outcome review and complete-job verification. Version 0.6.0 introduced product-experience research for substantial UI work: observed
 flows, annotated visual references, a capability map and a concrete design handoff.
 It preserves the original goal across phased builds and checks the result against
 real tasks. Technical/local-first research, feasibility checks and paired evaluation
@@ -277,3 +277,14 @@ or a fixture reproducing a retrieval/reporting bug. Include limits and competing
 approaches. Keep private project research out of this public repository.
 
 MIT. See [LICENSE](LICENSE).
+
+## Implementation feedback
+
+[Outcome review](skills/prior-art/references/outcome-review.md) closes substantial
+research/build loops with actual results, rejected patterns and bounded lessons.
+Check persistence, rediscovery and handoff as relevant. Trivial work stays lightweight.
+See the [sanitized workflow lesson](docs/examples/workflow-outcome.md).
+
+The [0.7.0 development pilot](docs/evals/pilot-2026-09-26/README.md) preserves six real
+Claude responses to synthetic tasks. Core decisions were similar; both arms had retry
+safety gaps. No superiority claim, human grades, or live research benchmark.

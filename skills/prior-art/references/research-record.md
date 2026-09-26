@@ -74,3 +74,10 @@ interacted/demo/static/inferred evidence labels, private artifact storage locati
 without publishing private contents, capability map, proposed deferrals and acceptance
 checks. Record implemented phase versus remaining original goal, actual task results,
 and agent inspection versus user testing. See [product-experience](product-experience.md).
+
+## Outcome delta (after meaningful implementation or rerun)
+
+Use [outcome review](outcome-review.md): original hypothesis/evidence, implementation
+seam, observed complete-job check, retained/adapted/rejected/unresolved disposition,
+correction and bounded reusable lesson. Preserve provenance and untested roles or
+environments. Omit for trivial work; pending checks remain pending.

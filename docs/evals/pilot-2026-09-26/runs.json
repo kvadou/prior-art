@@ -1,0 +1,296 @@
+[
+  {
+    "task_id": "subtitle-review-regression",
+    "arm": "baseline",
+    "task_sha256": "edf8f9b15ced0e07dad2204d262323a9565f53e9cdb7f6ee14e680c7e7ad20b8",
+    "instructions_sha256": "cca80b25cbae180c4ea01d93997f114346122fa0bbf181d137fcde03da44a717",
+    "elapsed_seconds": 21.467,
+    "exit_code": 0,
+    "timed_out": false,
+    "subtype": "success",
+    "models": [
+      "claude-opus-5-5"
+    ],
+    "cost_usd": 0.114236,
+    "answer": "# Decision: ui-17 is a completed timing-strip phase, not a completed review workflow\n\n**Recommendation:** Keep the timing strip and its edge dragging. Replace the full-screen editor that swaps out the rest of the view with the strip inside the existing review layout: flagged-cue list, editor and context pane all stay visible. Correct the status message before anyone ships it.\n\n**Strongest evidence:** T1 records two regressions. Next-cue fails inside the timing editor, and Escape at cue 42 lands on cue 1. I1 gives the cause: the timing editor replaces the list and context pane, and the shortcut is registered only on the list screen. R1 is an interacted pointer-and-keyboard trace. It shows the pattern the brief needs: select a flagged cue, the three-cue context updates, you drag an edge, focus stays on the edge, and next-cue still works.\n\n**Material limitation:** No keyboard-only full review has run. R1 does not show keyboard edge adjustment. It is unknown whether the side pane and timing strip combine cleanly (C1).\n\n**Next check:** Build a local prototype of timing strip, resizable side pane and context pane together. Then run a keyboard-only review from a mid-film flagged cue.\n\n## Brownfield review\n\n| Item | Disposition | Basis |\n|---|---|---|\n| Pointer edge-drag | **KEEP** | T1 pass; C1 requires it |\n| Per-keystroke local text save | **KEEP** | T1 persistence pass. Verify it covers timing edits too. |\n| Full-screen waveform from R2 | **FIX** | R2 was pointer-only, had no subtitle task, and its claimed benefit was size. It hides the context B1 requires to stay visible. |\n| Next-cue scoped to list screen | **FIX** | Register Previous/Next at the review scope so they work with focus in the strip or editor. |\n| Escape → cue 1 | **FIX** | Return to the originating cue and restore focus to it. |\n| Adjacent timing comparison | **FIX** | Show neighbors in the strip or context pane. No second editor should be needed. |\n| Keyboard edge adjustment | **INVESTIGATE** | \"Complete review entirely with the keyboard\" may require nudging cue edges from the keyboard. No evidence yet. Decide with the brief owner. |\n| Screenshot approval | **ACCEPT only as a render check** | It does not establish task completion or usability. |\n\n## Capability map (brief → status)\n\n- **Jump between flagged cues:** present, but broken inside the timing editor.\n- **Edit cue text:** implemented and verified.\n- **Compare neighboring timing:** degraded; now requires two editors.\n- **Preserve unsaved work while navigating:** text is verified. Timing edits are unverified.\n- **Keyboard-only review:** unverified, and likely failing given the next-cue result.\n- **Zoomable, draggable strip without hiding context:** drag is verified. \"Without hiding context\" currently fails.\n\n## Next work (local UI and existing tests only)\n\n1. Prototype the strip inside the existing layout using the side-pane component. Use synthetic long cues, dense flagged runs, overlapping timings and a narrow window. State what the prototype cannot prove.\n2. Move the navigation shortcuts to the review scope, and fix Escape focus restoration.\n3. Add or extend interaction tests:\n   - With focus on a dragged edge, next-cue moves to the next flagged cue.\n   - Escape at cue 42 returns to cue 42.\n   - Adjacent cues' timing is visible with no extra editor opened.\n   - Unsaved text and timing edits survive navigation.\n   - A keyboard-only pass through all flagged cues succeeds, including timing edits if the brief requires them.\n   - Pointer drag still passes.\n4. Rerun the original tasks on the result. Report agent inspection separately from any editor testing.\n\n## Coverage and status note\n\nThe applicable evidence is R1 (interacted trace) plus the project's own I1/T1/C1. R2 is an unrelated domain and weak for this decision. The packet has no standards, accessibility guidance or failure history. Those are gaps, not absence.\n\nSuggested status: *\"Timing-strip edge dragging implemented and verified. Navigation, context and keyboard-only review regressions open; workflow not complete.\"*",
+    "usage": {
+      "input_tokens": 2,
+      "cache_creation_input_tokens": 9191,
+      "cache_read_input_tokens": 0,
+      "output_tokens": 2035,
+      "output_tokens_details": {
+        "thinking_tokens": 575
+      },
+      "server_tool_use": {
+        "web_search_requests": 0,
+        "web_fetch_requests": 0
+      },
+      "service_tier": "standard",
+      "cache_creation": {
+        "ephemeral_1h_input_tokens": 9191,
+        "ephemeral_5m_input_tokens": 0
+      },
+      "inference_geo": "not_available",
+      "iterations": [
+        {
+          "input_tokens": 2,
+          "output_tokens": 2035,
+          "cache_read_input_tokens": 0,
+          "cache_creation_input_tokens": 9191,
+          "cache_creation": {
+            "ephemeral_5m_input_tokens": 0,
+            "ephemeral_1h_input_tokens": 9191
+          },
+          "type": "message"
+        }
+      ],
+      "speed": "standard"
+    },
+    "human_review": null
+  },
+  {
+    "task_id": "subtitle-review-regression",
+    "arm": "candidate",
+    "task_sha256": "edf8f9b15ced0e07dad2204d262323a9565f53e9cdb7f6ee14e680c7e7ad20b8",
+    "instructions_sha256": "a1014b8fdef4412a4e7bdfffd22662624d73c66d8b48e30e479831e8a074677f",
+    "elapsed_seconds": 22.232,
+    "exit_code": 0,
+    "timed_out": false,
+    "subtype": "success",
+    "models": [
+      "claude-opus-5-5"
+    ],
+    "cost_usd": 0.12742799999999999,
+    "answer": "# Subtitle Review Rebuild: ui-17 Outcome Review\n\n**Recommendation:** Do not accept ui-17 as complete. Keep the edge dragging, but embed the timing strip inside the review screen (for example, a resizable side pane) rather than in R2's full-screen replacement. Restore keyboard navigation and place retention.\n**Strongest evidence:** R1 (interacted trace, v3, steps 2–6) shows a subtitle-relevant pattern: the editor and a three-cue context pane stay visible, focus stays on the dragged edge, and the next-cue shortcut still works. T1 shows ui-17 breaks next-cue, loses place on Escape (cue 42 goes to cue 1), and makes adjacent comparison require two editors.\n**Material limitation:** The survey is thin. It has one applicable interaction trace and one poor-fit reference. Combining the side pane with the timing strip is untried (C1). Nothing observed shows keyboard adjustment of timing edges.\n**Next check:** Prototype the timing strip in the existing resizable side pane with the list and context pane kept visible. Then run a keyboard-only full-review test on a synthetic 300–600 cue fixture.\n\n## Correcting the status\nThe claim \"layout accepted; review workflow complete\" is not supported. The screenshot comparison shows only the visible layout. It does not show navigation, place retention, or usability. Of the five brief requirements:\n- **Verified:** edit text, preserve unsaved work (T1 pass).\n- **Regressed:** jump between flagged cues from the timing editor, compare neighboring timing.\n- **Untested:** complete review with the keyboard only.\n\nReport this as \"timing-strip phase partially implemented; original workflow goal unfinished.\"\n\n## Review (brownfield)\n| Item | Disposition | Basis | Seam / check |\n|---|---|---|---|\n| Pointer edge-drag | **KEEP** | T1 pass; C1 requires it | Existing drag test stays green |\n| Per-keystroke local text save | **KEEP** | T1 persistence pass | Edit, navigate away, return: text intact |\n| Full-screen timing editor replacing list/context (from R2) | **FIX** | R2 is pointer-only, not a subtitle task, and its benefit claim is its own publication; T1 comparison failure | Timing strip in side pane beside list + context pane; neighbors visible while dragging |\n| Next-cue shortcut registered only in list screen | **FIX** | T1 regression; R1 step shows shortcut works after drag | Register at review-screen scope; test: next-cue from timing focus lands on next flagged cue |\n| Escape returns to first cue | **FIX** | T1 cue 42 → 1 | Escape keeps current cue selected; test: cue 42 → Escape → still 42, focus in list/editor |\n| Keyboard adjustment of cue edges | **INVESTIGATE** | Brief requires keyboard-only review. R1 shows only that focus stays on the edge after a drag. Keyboard nudging is inferred, not observed. | Confirm with the brief owner whether keyboard timing edits are in scope. If they are, add an edge-focus + nudge keys acceptance test. |\n| Side pane + timing strip combination | **INVESTIGATE** | C1: components exist, pairing untried | Local slice with long cue text, dense adjacent cues, and an unsaved-edit state |\n\n## Acceptance checks (proposed, not run)\n1. **Keyboard-only complete job.** Start at the first flagged cue. Jump through the flagged cues, edit text, and adjust or compare timing. Reach the last flag without using the pointer. No focus traps.\n2. **Place retention.** From cue 42, open and close timing and trigger Escape. The same cue stays selected and the context pane is unchanged.\n3. **Adjacent comparison.** Neighboring cue timings are visible while editing the current cue, with no second editor opened.\n4. **Persistence and rediscovery.** Make an unsaved edit, navigate across flags and the timing strip, reload, and find the cue again in the flagged list with the edit intact.\n5. **Regression suite.** The existing drag, persistence, and next-cue tests all pass. Screenshot approval alone is not sufficient.\n\nThese are agent-designed checks. They are not user testing and not measured editor efficiency.\n\n## Coverage and retained lesson\n- **Interaction trace:** read (R1, applicable).\n- **Adjacent-domain tool:** read (R2, low applicability).\n- **Official contracts/standards, failure histories, accessibility guidance:** not in the packet, so these are gaps, not absence.\n\n**Record in `docs/prior-art/`:** When adopting a full-screen pattern from a tool with different jobs, first verify that the host workflow's navigation and context survive. Refresh this lesson if the brief or the review components change.",
+    "usage": {
+      "input_tokens": 2,
+      "cache_creation_input_tokens": 10655,
+      "cache_read_input_tokens": 0,
+      "output_tokens": 2109,
+      "output_tokens_details": {
+        "thinking_tokens": 466
+      },
+      "server_tool_use": {
+        "web_search_requests": 0,
+        "web_fetch_requests": 0
+      },
+      "service_tier": "standard",
+      "cache_creation": {
+        "ephemeral_1h_input_tokens": 10655,
+        "ephemeral_5m_input_tokens": 0
+      },
+      "inference_geo": "not_available",
+      "iterations": [
+        {
+          "input_tokens": 2,
+          "output_tokens": 2109,
+          "cache_read_input_tokens": 0,
+          "cache_creation_input_tokens": 10655,
+          "cache_creation": {
+            "ephemeral_5m_input_tokens": 0,
+            "ephemeral_1h_input_tokens": 10655
+          },
+          "type": "message"
+        }
+      ],
+      "speed": "standard"
+    },
+    "human_review": null
+  },
+  {
+    "task_id": "reservation-retry-contradiction",
+    "arm": "candidate",
+    "task_sha256": "775229fd552732a364cd73a8f15eefdc104c973b3f0c9f32dd6750bb3e210ade",
+    "instructions_sha256": "a1014b8fdef4412a4e7bdfffd22662624d73c66d8b48e30e479831e8a074677f",
+    "elapsed_seconds": 25.109,
+    "exit_code": 0,
+    "timed_out": false,
+    "subtype": "success",
+    "models": [
+      "claude-opus-5-5"
+    ],
+    "cost_usd": 0.0581066,
+    "answer": "# Brownfield review: reservation retry after failed staging check (srv-22)\n\n**Recommendation:** Make one durable local request record per `client_request_key`. Send provider v2.4's `Idempotency-Key` header. Before any repeat POST, reconcile through the provider's lookup endpoint.\n\n**Strongest evidence:** P1 (v2.4) treats a `request_key` in the JSON body as metadata only. I1 sends the key only in the body. T1 shows the result: two allocations (A91, A92) and two local rows for Q17.\n\n**Material limitation:** Provider replay lasts only 24h (C1), but customers can retry for 72h. There is no evidence that orphaned allocations can be released automatically.\n\n**Next check:** Correct the test stub so it matches v2.4. Then add a lost-response retry test that asserts exactly one provider allocation and one local row.\n\n## Findings\n\n| Item | Disposition | Basis |\n|---|---|---|\n| Key sent only in JSON body | **FIX** (SUPPORTED) | P1 and I1 conflict directly; T1 shows the duplicate. |\n| New row with a fresh ID on every attempt | **FIX** (SUPPORTED) | I1 inserts a row per attempt; T1 leaves R1 stuck in pending. |\n| Test stub deduplicates on the body `request_key` | **FIX** (SUPPORTED) | T2's stub models v3.0-like behavior (P2), not the pinned v2.4. |\n| D1 design paragraph | **FIX the record** | D1 cited an unversioned example. Amend it and link P1 rather than rewriting its history. |\n| Persist pending state before the provider call | **KEEP** | Consistent with C1. |\n| `request_key` body metadata | **KEEP** | P1's GET by request key depends on it. |\n| Staying on v2.4 | **ACCEPT** | P2's body-key behavior is unavailable this release. |\n| Handling orphans like A91; production duplicates | **INVESTIGATE** | C1 gives no duplicate count and no cancellation evidence. |\n\n## Proposed changes (inferences, not observed behavior)\n\n1. **Local idempotency seam.** Adding a unique constraint to the existing table is blocked by historical duplicates (C1). Instead, add a new request-state table with a unique `client_request_key`. It starts empty, so it can take the constraint immediately. Insert-or-fetch it transactionally before the provider call. Overlapping calls then converge on one record. This design is my inference; it is untested.\n\n2. **Provider call.** Send `Idempotency-Key` with a stable value stored on that record, and keep the body `request_key`.\n\n3. **Timeout path.** Mark the record \"outcome unknown\", not failed (P1 says a timeout does not imply failure). On retry, call GET `/allocations/by-request-key` first:\n   - One allocation found: adopt it.\n   - None found and still within 24h: POST again with the same header.\n   - None found after 24h: POST only after a fresh GET. Residual risk: the packet does not say how quickly the lookup reflects a new allocation. Mark this UNKNOWN.\n   - More than one found: flag for manual reconciliation. Do not auto-release.\n\n4. **Ordering.** Fix the stub and tests first, then add the header, then the new table and state machine. Reconciling the historical duplicates is a separate, later task. Production cleanup and provider account changes are out of scope.\n\n## Verification checks (proposed, not run)\n\n- Stub honors only the header for deduplication; the body key is ignored, per v2.4.\n- Lost response on attempt A, then retry B: one allocation, one confirmed record.\n- Two overlapping calls with the same key: one record, one provider POST or replay.\n- Retry after the 24h replay window (simulated): the GET finds the existing allocation and no new POST is made.\n- Lookup returns two allocations: status becomes \"needs reconciliation\" and nothing is released automatically.\n- Assert row and record counts for a repeated `client_request_key`.\n\n## Coverage and gaps\n\nOnly the supplied packet (D1, P1, P2, I1, T1, T2, C1) was read. No public implementations, provider issue history, or incident sources were searched. The following are NOT FOUND IN SURVEY:\n- how quickly the provider lookup reflects new allocations,\n- cancellation semantics,\n- production duplicate volume.\n\nStaging and production remain unverified for the proposed design.",
+    "usage": {
+      "input_tokens": 2,
+      "cache_creation_input_tokens": 1383,
+      "cache_read_input_tokens": 9273,
+      "output_tokens": 2259,
+      "output_tokens_details": {
+        "thinking_tokens": 766
+      },
+      "server_tool_use": {
+        "web_search_requests": 0,
+        "web_fetch_requests": 0
+      },
+      "service_tier": "standard",
+      "cache_creation": {
+        "ephemeral_1h_input_tokens": 1383,
+        "ephemeral_5m_input_tokens": 0
+      },
+      "inference_geo": "not_available",
+      "iterations": [
+        {
+          "input_tokens": 2,
+          "output_tokens": 2259,
+          "cache_read_input_tokens": 9273,
+          "cache_creation_input_tokens": 1383,
+          "cache_creation": {
+            "ephemeral_5m_input_tokens": 0,
+            "ephemeral_1h_input_tokens": 1383
+          },
+          "type": "message"
+        }
+      ],
+      "speed": "standard"
+    },
+    "human_review": null
+  },
+  {
+    "task_id": "reservation-retry-contradiction",
+    "arm": "baseline",
+    "task_sha256": "775229fd552732a364cd73a8f15eefdc104c973b3f0c9f32dd6750bb3e210ade",
+    "instructions_sha256": "cca80b25cbae180c4ea01d93997f114346122fa0bbf181d137fcde03da44a717",
+    "elapsed_seconds": 27.168,
+    "exit_code": 0,
+    "timed_out": false,
+    "subtype": "success",
+    "models": [
+      "claude-opus-5-5"
+    ],
+    "cost_usd": 0.059833800000000006,
+    "answer": "# Brownfield Review: Reservation Idempotency (srv-22)\n\n**Recommendation:** Fix the service before adding any more retry logic. Each customer request should get one durable local request record. Every provider POST should send `Idempotency-Key`. Past the provider's replay window, the service should look up existing allocations before posting again.\n\n**Strongest evidence:** Under the pinned 2.4 contract (P1), a JSON `request_key` is metadata only. The service sends no `Idempotency-Key` header (I1). T1 shows the result: one clientKey produced two allocations (A91, A92) and two local rows (R1 pending, R2 confirmed).\n\n**Material limitation:** The provider guarantees replay for 24h, but customers can retry for 72h (C1). There is also no evidence on production duplicate counts, cancellation, or whether automatic release is safe.\n\n**Next check:** Change the test stub to 2.4 semantics (deduplicate on the header only) and replay the T1 scenario. Expect one local row, one provider allocation and a confirmed result.\n\n## Diagnosis\n\nThe observed failure has three causes:\n\n- **Wrong contract version in the design.** D1 cited an unversioned example. The behavior it assumed matches the 3.0 note (P2), which this account cannot use during the release window. Evidence status: SUPPORTED.\n- **No stable local identity.** Each attempt inserts a row with a new reservation ID, and `client_request_key` has a non-unique index. Nothing locally prevents duplicate rows or overlapping attempts. Evidence status: SUPPORTED.\n- **Tests hide the defect.** The retry test's stub deduplicates on the body field (T2), so it passes against behavior the real provider does not have. Evidence status: SUPPORTED.\n\n## Dispositions\n\n**FIX**\n1. **Persist one request record.** Create or load a single record per `client_request_key` before any provider call, and reuse it on every attempt. For new data, enforce uniqueness, for example with a new request table that has a unique key. This is an inference: it avoids waiting on historical cleanup before adding the existing-table constraint (C1).\n2. **Send the key correctly.** Put a stable key in the `Idempotency-Key` header, and keep `request_key` in the body so GET lookup still works.\n3. **Serialize attempts per request.** Use a transactional state transition (pending → calling → confirmed/unknown) so overlapping calls for one key don't POST at the same time.\n4. **Treat a timeout as \"unknown,\" not \"failed\" (P1).** Before any retry, query GET `/allocations/by-request-key`:\n   - If it finds exactly one allocation, confirm it.\n   - If it finds none, POST with the same header.\n   - If it finds more than one, flag the request for human review.\n5. **Retries after 24h must look up first.** Never POST past the replay window without checking for an existing allocation. Note that GET-then-POST is not atomic, so the local serialization in item 3 is required.\n\n**KEEP**\n- The pending-row-before-call pattern from D1.\n- The relational transaction as the local source of truth.\n\n**ACCEPT**\n- Provider version 2.4 and no distributed transaction for this release.\n- Some residual ambiguity after 24h, handled by lookup-before-POST plus review.\n\n**INVESTIGATE**\n- Existing duplicates such as A91/A92 and pending R1-style rows. Reconcile these before adding a unique constraint to the existing table. Do not release allocations automatically; nothing shows it is safe, and provider or production operations are out of scope.\n- Production duplicate counts and cancellation semantics.\n- Revise D1 so it cites the pinned 2.4 contract.\n\n## Verification\n\nImplementation seam: the reservation service's attempt/retry path and its provider client (header construction, lookup).\n\n| Test | Expected result |\n|---|---|\n| Stub replays on the header only; the body key is ignored | Current srv-22 fails; the fix passes |\n| Response loss: POST succeeds, response dropped, client retries | 1 row, 1 allocation, confirmed |\n| Two overlapping calls with the same key | 1 provider POST, 1 row |\n| Retry at hour 30 (replay window expired) with an existing allocation | Lookup finds it; no new POST |\n| Lookup returns 2 allocations | Request flagged for review; no auto-release |\n| Row-count assertion for repeated keys | Exactly 1 row per key |\n\n## Coverage\n\nThis review used only the supplied packet: design D1, provider contracts P1/P2, implementation I1, trace T1, test results T2 and constraints C1. No public repositories, provider incident history or other implementations were surveyed; those families are marked not-applicable for this exercise. Nothing was executed.\n\nThe proposed research record location is `docs/prior-art/`. It has not been written, since no edits are available here.",
+    "usage": {
+      "input_tokens": 2,
+      "cache_creation_input_tokens": 1383,
+      "cache_read_input_tokens": 7809,
+      "output_tokens": 2360,
+      "output_tokens_details": {
+        "thinking_tokens": 736
+      },
+      "server_tool_use": {
+        "web_search_requests": 0,
+        "web_fetch_requests": 0
+      },
+      "service_tier": "standard",
+      "cache_creation": {
+        "ephemeral_1h_input_tokens": 1383,
+        "ephemeral_5m_input_tokens": 0
+      },
+      "inference_geo": "not_available",
+      "iterations": [
+        {
+          "input_tokens": 2,
+          "output_tokens": 2360,
+          "cache_read_input_tokens": 7809,
+          "cache_creation_input_tokens": 1383,
+          "cache_creation": {
+            "ephemeral_5m_input_tokens": 0,
+            "ephemeral_1h_input_tokens": 1383
+          },
+          "type": "message"
+        }
+      ],
+      "speed": "standard"
+    },
+    "human_review": null
+  },
+  {
+    "task_id": "static-caption-control",
+    "arm": "baseline",
+    "task_sha256": "e9adf151d4e3a0d75dd5e799cd762bf6d70ae7cec5d8536e4b6f127677976bd9",
+    "instructions_sha256": "cca80b25cbae180c4ea01d93997f114346122fa0bbf181d137fcde03da44a717",
+    "elapsed_seconds": 4.731,
+    "exit_code": 0,
+    "timed_out": false,
+    "subtype": "success",
+    "models": [
+      "claude-opus-5-5"
+    ],
+    "cost_usd": 0.0126258,
+    "answer": "Trivial, reversible copy change, so the prior-art skill says to skip research.\n\n**Proposed patch** (`ExportArchiveTitle.tsx`):\n\n```diff\n export function ExportArchiveTitle() {\n-  return <h2 className=\"section-title\">Past exports</h2>;\n+  return <h2 className=\"section-title\">Completed exports</h2>;\n }\n```\n\n**Verification:** By inspection only; nothing was rendered or run.\n- The diff changes only the heading text.\n- The `h2` element and `className=\"section-title\"` are unchanged.\n- The fixture says the component has no props, data access, handlers, localization keys, links or conditional rendering. So behavior is unchanged.\n- No tests select this text, so none need updating.\n- Rendering wasn't available, so the visual result is unverified. The class is unchanged, so no styling change is expected. The new text is longer, but that is unlikely to matter.",
+    "usage": {
+      "input_tokens": 2,
+      "cache_creation_input_tokens": 627,
+      "cache_read_input_tokens": 7809,
+      "output_tokens": 302,
+      "output_tokens_details": {
+        "thinking_tokens": 0
+      },
+      "server_tool_use": {
+        "web_search_requests": 0,
+        "web_fetch_requests": 0
+      },
+      "service_tier": "standard",
+      "cache_creation": {
+        "ephemeral_1h_input_tokens": 627,
+        "ephemeral_5m_input_tokens": 0
+      },
+      "inference_geo": "not_available",
+      "iterations": [
+        {
+          "input_tokens": 2,
+          "output_tokens": 302,
+          "cache_read_input_tokens": 7809,
+          "cache_creation_input_tokens": 627,
+          "cache_creation": {
+            "ephemeral_5m_input_tokens": 0,
+            "ephemeral_1h_input_tokens": 627
+          },
+          "type": "message"
+        }
+      ],
+      "speed": "standard"
+    },
+    "human_review": null
+  },
+  {
+    "task_id": "static-caption-control",
+    "arm": "candidate",
+    "task_sha256": "e9adf151d4e3a0d75dd5e799cd762bf6d70ae7cec5d8536e4b6f127677976bd9",
+    "instructions_sha256": "a1014b8fdef4412a4e7bdfffd22662624d73c66d8b48e30e479831e8a074677f",
+    "elapsed_seconds": 5.538,
+    "exit_code": 0,
+    "timed_out": false,
+    "subtype": "success",
+    "models": [
+      "claude-opus-5-5"
+    ],
+    "cost_usd": 0.0144186,
+    "answer": "This is a trivial, reversible copy edit, so the skill's guidance is to skip prior-art research, pattern surveys and retrospectives.\n\n**Patch** (`ExportArchiveTitle.tsx`)\n\n```diff\n export function ExportArchiveTitle() {\n-  return <h2 className=\"section-title\">Past exports</h2>;\n+  return <h2 className=\"section-title\">Completed exports</h2>;\n }\n```\n\n**Resulting file**\n\n```tsx\nexport function ExportArchiveTitle() {\n  return <h2 className=\"section-title\">Completed exports</h2>;\n}\n```\n\n**Verification (by inspecting the diff only; nothing was run or rendered)**\n- Only the heading text changed. The `<h2>` element, `className=\"section-title\"`, the function signature and the export are identical.\n- The fixture says the component has no props, data access, handlers, localization keys, links or conditional rendering, and no tests select its text. So no other code or tests need updating.\n- I did not check the rendered output, because rendering isn't available here. If you want a visual check, confirm on the next normal render that the heading reads \"Completed exports\" with the same styling.",
+    "usage": {
+      "input_tokens": 2,
+      "cache_creation_input_tokens": 627,
+      "cache_read_input_tokens": 9273,
+      "output_tokens": 377,
+      "output_tokens_details": {
+        "thinking_tokens": 0
+      },
+      "server_tool_use": {
+        "web_search_requests": 0,
+        "web_fetch_requests": 0
+      },
+      "service_tier": "standard",
+      "cache_creation": {
+        "ephemeral_1h_input_tokens": 627,
+        "ephemeral_5m_input_tokens": 0
+      },
+      "inference_geo": "not_available",
+      "iterations": [
+        {
+          "input_tokens": 2,
+          "output_tokens": 377,
+          "cache_read_input_tokens": 9273,
+          "cache_creation_input_tokens": 627,
+          "cache_creation": {
+            "ephemeral_5m_input_tokens": 0,
+            "ephemeral_1h_input_tokens": 627
+          },
+          "type": "message"
+        }
+      ],
+      "speed": "standard"
+    },
+    "human_review": null
+  }
+]

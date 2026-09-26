@@ -1,0 +1,91 @@
+{
+  "schema_version": 1,
+  "synthetic": false,
+  "notice": "Manifest assertions and human judgments only. This tool does not verify run provenance, artifact contents, citations or grading accuracy.",
+  "baseline_revision": "0933f1449927fbbbfca7e9ddbc0049f03c640dcc",
+  "candidate_revision": "0.7.0-bundle-sha256:07a57f4897a173f613de3873bac0a57679e0b94b248545e40a21bac790139ffd",
+  "summary": {
+    "pairs": 3,
+    "missing_pairs": 0,
+    "conditions_mismatch": 0,
+    "awaiting_human_review": 3,
+    "paired_human_review": 0
+  },
+  "pairs": [
+    {
+      "id": "subtitle-review-regression",
+      "status": "awaiting_human_review",
+      "missing_sides": [],
+      "mismatched_conditions": [],
+      "rubric_delta": null,
+      "cost_usd": {
+        "baseline": 0.114236,
+        "candidate": 0.12742799999999999,
+        "delta": 0.013191999999999982
+      },
+      "elapsed_seconds": {
+        "baseline": 21.467,
+        "candidate": 22.232,
+        "delta": 0.7650000000000006
+      },
+      "human_reviews": {
+        "baseline": null,
+        "candidate": null
+      },
+      "outputs": {
+        "baseline": "runs.json#subtitle-review-regression/baseline",
+        "candidate": "runs.json#subtitle-review-regression/candidate"
+      }
+    },
+    {
+      "id": "reservation-retry-contradiction",
+      "status": "awaiting_human_review",
+      "missing_sides": [],
+      "mismatched_conditions": [],
+      "rubric_delta": null,
+      "cost_usd": {
+        "baseline": 0.059833800000000006,
+        "candidate": 0.0581066,
+        "delta": -0.0017272000000000051
+      },
+      "elapsed_seconds": {
+        "baseline": 27.168,
+        "candidate": 25.109,
+        "delta": -2.0589999999999975
+      },
+      "human_reviews": {
+        "baseline": null,
+        "candidate": null
+      },
+      "outputs": {
+        "baseline": "runs.json#reservation-retry-contradiction/baseline",
+        "candidate": "runs.json#reservation-retry-contradiction/candidate"
+      }
+    },
+    {
+      "id": "static-caption-control",
+      "status": "awaiting_human_review",
+      "missing_sides": [],
+      "mismatched_conditions": [],
+      "rubric_delta": null,
+      "cost_usd": {
+        "baseline": 0.0126258,
+        "candidate": 0.0144186,
+        "delta": 0.0017928000000000006
+      },
+      "elapsed_seconds": {
+        "baseline": 4.731,
+        "candidate": 5.538,
+        "delta": 0.8070000000000004
+      },
+      "human_reviews": {
+        "baseline": null,
+        "candidate": null
+      },
+      "outputs": {
+        "baseline": "runs.json#static-caption-control/baseline",
+        "candidate": "runs.json#static-caption-control/candidate"
+      }
+    }
+  ]
+}

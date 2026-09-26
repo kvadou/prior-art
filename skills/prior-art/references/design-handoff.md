@@ -55,3 +55,7 @@ inspection from user testing. Retain a concise reusable lesson and its limits.
 When evaluating this skill, use held-out tasks and the existing paired-evaluation
 protocol. A live project that shaped the update is a worked example, not independent
 proof that the new skill outperforms the previous version.
+
+Use [outcome review](outcome-review.md) for the compact implementation feedback delta.
+Include rediscovery after reload and relevant role/context handoffs, not just a
+successful form submission. Carry changed decisions back into the existing record.

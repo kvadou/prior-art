@@ -1,3 +1,5 @@
+## Bundled file: SKILL.md
+
 ---
 name: prior-art
 description: Research existing implementations and public technical evidence before building or substantially extending a system. Compare repositories, official API contracts, libraries, standards, issue/PR histories and relevant UX or AI research, including observed interfaces and interaction flows for substantial UI work. Produce a cited foundation or an evidence-based review of an existing implementation, with decisions and verification checks. Use for prior-art requests, build-vs-adopt choices, architecture comparisons, and substantial new features in established categories. Also use when repeated workarounds suggest an existing capability or design mismatch. Scale down or skip research for trivial reversible changes.
@@ -180,12 +182,6 @@ location without a repo). Reuse those records next time, checking source revisio
 and project constraints before trusting them. Promote proven lessons into a local
 pattern record; do not copy private context into a public skill repository.
 
-After meaningful implementation or a rerun, use the [outcome review](references/outcome-review.md)
-to compare the selected patterns with actual results. Trace consequential workflows
-through action, persistence, rediscovery and handoff; a successful submit is not a
-complete task. Retain corrections and limits locally, and promote only a bounded,
-evidence-backed lesson. Trivial edits need no retrospective ceremony.
-
 Stop when high-impact decisions have adequate applicable evidence or explicit gaps,
 relevant source families were covered or explained, and the latest bounded expansion
 adds no material tradeoffs. For an authorized UI build, recheck the original tasks and capability map against
@@ -193,3 +189,207 @@ the implementation, including visual hierarchy and preserved workflows. Label a
 completed phase separately from an unfinished broader goal.
 Report a thin or contradictory survey honestly. Never
 claim all public information was searched.
+
+
+## Bundled file: references/research-record.md
+
+# Research record and reusable pattern
+
+Use a concise project-local document, not a mandatory new database. Omit irrelevant
+sections; preserve evidence limitations. Link raw search reports/coverage rather
+than pasting them in full. Never publish private project context with public research.
+
+## Decision first
+
+- **Recommendation:** choose, keep, defer or investigate within the authorized scope.
+- **Evidence:** strongest applicable observation with source/revision/locator.
+- **Limitation:** material unknown or constraint that could change the recommendation.
+- **Next check:** smallest verification or review trigger; none if already resolved.
+
+## Run header
+
+- Question/outcome, greenfield or brownfield, scope and profile.
+- Known constraints; material assumptions and unanswered business questions.
+- Queries/time/tool budget, actual use if measured; source retrieval date.
+- Local-first review: prior decisions/research, current code/tests, installed tools
+  and integrations, package capabilities, then public alternatives. Record relevant
+  checks or skips without inventorying unrelated systems.
+- Prior research reused, revisions/constraints revalidated, and why it still applies.
+- Repeated workaround, if any: observed recurrence, cause still uncertain, and the
+  decision it motivates. Recurrence is not itself evidence that replacement is best.
+
+## Coverage ledger
+
+| Family/query | Status | Source/revision | What it establishes | Limits/next step |
+| --- | --- | --- | --- | --- |
+| Official API | read | URL, version, date | Public payment states | Internal locking unknown |
+| Implementation | read | repo, SHA, path:line | Atomic state transition | Scale differs from ours |
+| Incident history | failed | query/provider/date | Nothing yet | Timeout, not absence |
+
+Statuses: read, searched-no-relevant-result, failed, not-applicable. Script query
+coverage complete/partial/failed/skipped describes provider retrieval, not whether
+the research question is answered. Record both when needed.
+
+## Decision record
+
+- **Question / reversal cost / impact:** what can go wrong, what becomes expensive.
+- **Evidence status:** supported, contested, unknown, not found in surveyed sources.
+- **Observed:** source-pinned fact with precise locator; independent lineage/group.
+- **Inferred:** explanation if not directly documented; competing interpretations.
+- **Fits us because:** user/data/scale/security/operational constraints.
+- **Recommendation:** adopt dependency / adapt pattern / implement / keep / defer.
+- **Alternatives, including keep current:** concrete tradeoffs, not popularity.
+- **Operating cost:** recurring human work, maintenance, provider/dependency cost,
+  migration and rollback effort. Separate measured amounts from estimates/unknowns.
+- **Feasibility (when relevant):** demonstrated / documented but untested / blocked /
+  unknown; account/runtime constraints, human handoffs, costs, smallest proof and result.
+- **Implementation seam:** file, function, contract, migration or interface flow.
+- **Verification:** invariant/test, acceptance check or experiment and expected result.
+- **Unresolved:** what evidence would change the recommendation; owner if known.
+
+Example: A provider documents idempotent retry keys but its internal lock is unknown.
+Our recommendation may still be a unique operation ID plus transactional balance
+check, based on our concurrency requirements and another implementation. Keep the
+provider observation separate from that design inference. Test simultaneous retries
+and over-allocation; do not cite the API docs as proof of its internal SQL.
+
+## Pattern worth reusing
+
+Title/problem; applicable constraints; evidence/revisions; chosen tradeoff; known
+failure mode; regression check; limitations; retrieval date and refresh triggers.
+Refresh when the upstream version/contract changes, an advisory contradicts it,
+our constraints change, or the next task depends on unverified old behavior. There
+is no universal expiration period. Retain superseded records as history and link
+the newer decision instead of silently rewriting provenance.
+
+## Product-experience extension (when applicable)
+
+Link the annotated reference board and design handoff. Include task sequences,
+interacted/demo/static/inferred evidence labels, private artifact storage location
+without publishing private contents, capability map, proposed deferrals and acceptance
+checks. Record implemented phase versus remaining original goal, actual task results,
+and agent inspection versus user testing. See [product-experience](product-experience.md).
+
+
+## Bundled file: references/design-handoff.md
+
+# Research-to-design handoff
+
+Use for an authorized substantial product build or redesign. Research-only requests
+end with recommendations or proposed artifacts, not an unsolicited implementation.
+A build authorized by the user can proceed without adding a new approval ceremony.
+Honor any explicit design-review checkpoint in the user's instructions.
+
+## Preserve the requested outcome
+
+Before implementation, map the original request to concrete capabilities. Broad goals
+such as "enterprise-grade" need relevant tasks, states, data semantics and quality
+criteria, not an assumption of complete competitor parity. Mark which expectations
+are explicit and which are inferred. Ask only when a material scope choice cannot be
+resolved from the user's context or authorization.
+
+| User outcome / job | Needed capability | Current evidence | Proposed phase / disposition | Acceptance check |
+| --- | --- | --- | --- | --- |
+| Know what happens next | Owner, next action and agreed date | Existing fields; fragmented entry points | Improve in current phase | Find and update next action from the profile |
+
+Separate **implemented and verified**, **present but unverified**, **missing**, and
+**unknown**. Name deferrals and their effect on the original goal before building.
+A time/research budget does not authorize silently reducing the requested deliverable.
+A phase can be complete while the original goal still has unfinished work; report both.
+
+## Make the design concrete
+
+Choose a small number of meaningfully different arrangements when unresolved tradeoffs
+warrant comparison. An obvious, well-supported small change needs no forced variants.
+Compare task completion, information hierarchy, density, navigation and edit feedback;
+select a direction with reasons. Carry the user's brand and existing design system.
+
+For consequential interaction changes, make an appropriate prototype before a broad
+rebuild: a local interactive sketch, wireframe flow or existing-app slice. Use realistic
+synthetic content and inspect long names, multiple related records, overdue work and
+empty/error/conflict states where relevant. Explain what the prototype cannot prove.
+Do not embed real private records in a shared or externally generated artifact.
+
+Handoff contains: capability map, selected reference patterns and citations, screen/
+flow artifact, states and interaction contracts, implementation seams, preservation
+and migration requirements, and task-based acceptance checks. Reuse an existing
+project design brief rather than creating duplicate sources of truth.
+
+## Check the result against the goal
+
+After an authorized build, rerun the same tasks on the implementation. Check that the
+chosen pattern works with realistic content, that existing capabilities remain
+reachable, and that persistence, permissions and failure behavior are independently
+verified where relevant. Compare visual hierarchy against the references and brand;
+a passing render test alone does not establish usability or visual quality.
+
+Record observed results, unresolved failures, and changes from the proposed design.
+Do not invent timings, human preference or improvement scores. Distinguish agent
+inspection from user testing. Retain a concise reusable lesson and its limits.
+
+When evaluating this skill, use held-out tasks and the existing paired-evaluation
+protocol. A live project that shaped the update is a worked example, not independent
+proof that the new skill outperforms the previous version.
+
+
+## Bundled file: references/product-experience.md
+
+# Product-experience research
+
+Read for substantial interface, navigation or workflow design. Scale the work to
+its decisions. Backend-only and trivial visual changes do not need a visual survey.
+Use the same research budget as technical discovery; budget screenshot inspection
+and walkthroughs explicitly instead of adding an unbounded second research phase.
+
+## Observe a job through the interface
+
+Start with the user's real jobs, existing product and known constraints. Choose a
+small set of consequential flows, such as finding a record, understanding its state,
+recording an interaction, choosing a next action and handing work to someone else.
+Map which screens and state transitions each job requires. Inventory existing
+capabilities before redesigning so a cleaner screen does not silently remove them.
+
+Prefer actual product interaction when access is available, then official demos,
+walkthroughs and current documentation screenshots. Design systems explain component
+intent. Galleries and community concepts can inspire composition but cannot establish
+shipped behavior. Include a relevant alternative or counterexample when it could
+change the choice; do not collect screenshots merely to satisfy a source quota.
+
+Inspect the sequence, not only its landing screen: entry, navigation, contextual
+information, edit/action, feedback, return path. Where relevant inspect realistic
+information density, long content, empty/loading/error/conflict states, keyboard
+operation and narrow viewports. Do not invent inaccessible states or claim to have
+executed a flow from a static image.
+
+## Evidence and account boundaries
+
+Label each observation as **interacted**, **observed demo**, **static reference**, or
+**inferred**. Record the source/date, available version or plan, viewport if known,
+and what was and was not exercised. Screenshot evidence establishes visible layout;
+it does not prove persistence, permissions, scalability or a successful transaction.
+A publicly documented feature may be absent from the account/plan being inspected.
+
+Use available authorized browser/design tools, with a textual fallback when absent.
+If login is needed, let the user sign in and continue independent work while waiting.
+Do not create accounts, buy plans or mutate live records just to complete a survey.
+Inspect forms without submitting where possible. Record an unavailable flow as a gap;
+use official references within the budget without presenting them as firsthand use.
+
+Keep private screenshots, account URLs and record content in an explicitly local,
+untracked evidence location. Confirm repository visibility and ignore behavior before
+saving. Do not put private account artifacts in the public skill repository, uploads,
+external image-generation requests or published reference boards. Prefer synthetic
+records for shared mockups; abstract interaction lessons without copying client data.
+If raw capture is inappropriate, retain a written observation with its access limits.
+
+## From references to decisions
+
+Use the [reference board](reference-board.md) to annotate the useful pattern, its
+mechanism, fit, costs and rejected aspects. Adapt hierarchy and behavior to the user's
+brand and workload; do not reproduce a competitor's branding or decorative choices
+without a reason. Screens that look polished can still be poor task designs.
+
+Use the [design handoff](design-handoff.md) to connect these observations to capability
+coverage, proposed screens and acceptance checks. Preserve evidence uncertainty.
+A functional sketch should be labeled as such, not presented as the finished visual
+result or proof of improved usability.

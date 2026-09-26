@@ -1,5 +1,13 @@
 # Changelog
 
+## 0.7.0, 2026-09-26
+
+- Add a compact outcome review connecting research hypotheses to implementation results, corrections and bounded reusable lessons.
+- Check complete jobs through persistence, rediscovery and relevant role/context handoffs.
+- Add a sanitized implementation lesson; private evidence remains unpublished.
+- Publish six actual fixed-evidence comparison responses, including shared failures and unverified ambient-context isolation. No superiority claim.
+- Preserve lightweight handling of trivial work and existing CLI contracts.
+
 ## 0.6.0, 2026-09-26
 
 - Add conditional product-experience research for substantial UI tasks, with evidence labels for interaction, demos, static references and inference.
