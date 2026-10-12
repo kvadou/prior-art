@@ -21,8 +21,8 @@ not been evaluated. This pilot makes no superiority claim for any arm.
   SKILL.md plus research-record, synthesis, sources and outcome-review references;
   0.8.0 adds shipped-products. References were supplied eagerly, so routing and
   progressive loading were not measured.
-  The committed bundles have one trailing blank line trimmed for the repository's
-  whitespace check; the runs used the same text plus that newline (original file
+  The committed bundles have two trailing newlines trimmed for the repository's
+  whitespace check; the runs used the same text plus those newlines (original file
   SHA-256 `8e42672d...d2af1f` for 0.7.0, `384faecf...70c5bb` for 0.8.0).
 - [run.ts](run.ts): one fresh `claude --safe-mode -p` process per answer, tools, MCP,
   slash commands, settings sources and hooks disabled, medium effort, $0.50 cap, fresh
