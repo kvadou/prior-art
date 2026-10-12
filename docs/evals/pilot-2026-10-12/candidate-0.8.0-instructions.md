@@ -727,5 +727,3 @@ authority, product and version, account role, workflow, capture date, local path
 digest, and what it establishes. A decision citing it states the limits above. When
 a design copies an observed behavior, name it as an inferred requirement and give it
 an obligation, so the rebuilt behavior is checked rather than assumed.
-
-

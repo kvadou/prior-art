@@ -558,5 +558,3 @@ from the case that inspired them, using the repository's paired-evaluation proto
 Keep exact prompts, instruction snapshots, outputs, controls and missing measurements.
 Agent review is not human grading. Report failures and no-difference results; never
 claim superiority from a worked example or packaging tests.
-
-
