@@ -35,7 +35,10 @@ turn trivial edits into mandatory research. In brownfield,
 verify any claim. Read [irreversible-decisions](references/irreversible-decisions.md)
 for risk prompts, not answers to assume.
 
-Reuse known business constraints. Ask only unanswered questions that materially
+Turn the request into numbered questions (`Q1`...) and the evidence each needs, before
+searching. They set the stop condition and appear in the record.
+
+Reuse known business constraints. Ask the user only unanswered questions that materially
 change the research: concrete users/isolation, distinctive product behavior,
 scale, data semantics, deployment and adoption constraints. No fixed question quota.
 Offer a recommendation and state low-risk assumptions. Do not ask the user to resolve
@@ -92,6 +95,9 @@ families rather than filling them with irrelevant citations.
   accessibility/design-system guidance for UI work. Distinguish interaction evidence
   from static images; use an [annotated reference board](references/reference-board.md).
 - Papers, reproducible benchmarks, datasets/model cards for AI/data work.
+- Shipped closed products, when a closed incumbent matters and use is authorized:
+  your own network captures, desktop bundles and observed sessions. Read
+  [shipped products](references/shipped-products.md) first; optional tooling only.
 
 The scripts assist discovery; they do not cover every family or prove an exhaustive
 survey. Existing CLI examples:
@@ -166,27 +172,34 @@ time restriction beyond what they stated. Label proposed schedules and experimen
 as proposals; available capability is not authorization to use it.
 Use SUPPORTED / CONTESTED / UNKNOWN / NOT FOUND IN SURVEY. Independent agreement raises
 confidence; neither a raw count nor a three-source threshold proves correctness.
+Give each source or search an evidence ID (`E1`) and each decision an ID (`D1`) that
+cites them. Failed or partial retrieval never counts as support.
 
 Lead with four short items: recommendation, strongest evidence, material limitation,
 and next check. Then provide the foundation/review, coverage, alternatives and detail
 needed to assess the decision. Include KEEP/current approach when an incumbent exists. Each important adopted pattern gets an implementation location or
-planned seam plus an executable invariant/test, acceptance check or experiment.
+planned seam plus an obligation (`O1`): an executable invariant/test, acceptance check
+or experiment at the authority its claim needs. It stays open until that check runs.
 An OpenAPI shape supports claims about the public interface, not internal tables,
 locking or transaction boundaries.
 
-Use [research record](references/research-record.md) as a compact output template.
+Use [research record](references/research-record.md) as a compact output template, and
+validate a saved record with `bin/record-lint.ts` (exit 0 complete, 2 incomplete,
+1 invalid).
 Save under `docs/prior-art/` in the current project (or a user-approved research
 location without a repo). Reuse those records next time, checking source revisions
 and project constraints before trusting them. Promote proven lessons into a local
 pattern record; do not copy private context into a public skill repository.
 
 After meaningful implementation or a rerun, use the [outcome review](references/outcome-review.md)
-to compare the selected patterns with actual results. Trace consequential workflows
+to compare the selected patterns with actual results, update obligations, and run
+`bin/record-lint.ts --require-closed`; open obligations are reported, not hidden. Trace consequential workflows
 through action, persistence, rediscovery and handoff; a successful submit is not a
 complete task. Retain corrections and limits locally, and promote only a bounded,
 evidence-backed lesson. Trivial edits need no retrospective ceremony.
 
-Stop when high-impact decisions have adequate applicable evidence or explicit gaps,
+Before stopping, mark every question answered, partial or unresolved. Stop when
+high-impact decisions have adequate applicable evidence or explicit gaps,
 relevant source families were covered or explained, and the latest bounded expansion
 adds no material tradeoffs. For an authorized UI build, recheck the original tasks and capability map against
 the implementation, including visual hierarchy and preserved workflows. Label a

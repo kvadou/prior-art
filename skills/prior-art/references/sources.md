@@ -16,6 +16,7 @@ The aim is relevant coverage, not exhaustive internet coverage or a source count
 | Introducing/fixing PRs, issues, design discussions, release notes | Why a rule exists, regressions, rejected approaches | Distinguish proposal, reproduction, maintainer conclusion and released fix. Confirm against the relevant version. |
 | First-party incident reports and engineering writeups | Failure mechanisms, scale limits, migrations, operational costs | Published context can differ from ours; verify dates and follow-up changes. |
 | Public product workflows, help centers, demos and accessibility guidance | Interaction choices, recovery, language, input methods and user constraints | Describe what was observed, at which viewport/state. Screenshots do not prove backend behavior or usability outcomes. |
+| Shipped products: your own network captures, desktop/Electron bundles, observed sessions | How a closed incumbent actually exposes resources and sequences a workflow | Authorized use only; observed-artifact/observed-ui authority. See [shipped products](shipped-products.md). Not evidence of internal storage or unobserved paths. |
 | Research papers, technical reports, benchmarks, model cards and datasets | AI methods, evaluation, known limits, task-specific tradeoffs | Inspect methods, baseline, data provenance, reproducibility and applicability; a benchmark result is not a production guarantee. |
 
 Use primary sources to substantiate technical claims. Directories, search engines,
@@ -46,6 +47,8 @@ Record license and maintenance at the inspected revision before recommending reu
 
 ## Evidence receipt
 
+Give every material source or search a stable evidence ID (`E1`, `E2`, ...) in the
+[research record](research-record.md) register, including failed and empty searches.
 For every material source record: URL, publisher/author, source kind, retrieval time,
 commit/tag/API or document version, exact path:line/section, relevant constraints,
 observed fact, and limitations. Use immutable permalinks where available; record

@@ -16,7 +16,10 @@ cost unknown; do not turn a workaround count into an automatic replacement verdi
 
 | Decision / reversal cost | Constraint fit | Evidence and ancestry | Status | Recommendation / invariant |
 |---|---|---|---|---|
-| Payment retry behavior / T1 | Concurrent retries, durable history | Pinned implementation + official provider contract; SDK shares vendor ancestry | supported within these limits | Stable operation key; duplicate retries produce one effect |
+| D1 Payment retry behavior / T1 | Concurrent retries, durable history | E2 pinned implementation + E1 official provider contract; SDK shares vendor ancestry | supported within these limits | Stable operation key; duplicate retries produce one effect (O1) |
+
+Cite evidence by register ID so every conclusion can be traced and checked. A claim
+with no ID is an assertion, not a finding.
 
 Use these statuses consistently:
 
@@ -29,6 +32,11 @@ Use these statuses consistently:
 - **not-found-in-surveyed-sources**: a bounded search found no instance. State the
   searched sources/paths/terms and exclusions. This does not establish global absence,
   novelty, lack of need or a market opportunity.
+
+These statuses fail closed. Failed, skipped, truncated or partial retrieval never
+aggregates to supported, and a failed search never becomes not-found. When one source
+contradicts another, record both and mark only the affected decision contested; keep
+unaffected conclusions.
 
 Source counts are coverage metadata, never a correctness threshold or automatic
 "adopt" rule. Check common ancestry: forks, copied schemas, vendor SDKs, derivative
@@ -80,7 +88,9 @@ For either mode, prioritize the smallest complete next phase. Convert material
 findings into implementation consequences and verification: invariants, regression
 cases, failure/retry tests, performance budgets, accessibility checks or AI evaluation
 criteria. Each should trace to a decision and source; no test-writing requirement for
-facts irrelevant to the authorized build. A research recommendation is not proof
+facts irrelevant to the authorized build. Record each as an obligation with the
+authority its claim needs: a runtime or concurrency claim needs an integration or
+end-to-end check, not inspection or a unit test of a helper. A research recommendation is not proof
 that an implementation already satisfies it.
 
 ## 4. Deliver and preserve
@@ -92,7 +102,10 @@ old record. Explain skipped stages briefly when relevant; do not require an audi
 every installed package. A repeated workaround warrants investigating its cause,
 not automatically changing a working system.
 
-Verify citations against opened sources and our actual code. Explain conflicts,
+Before reporting, revisit the question list and mark each question answered, partial
+or unresolved from its evidence, then run `bin/record-lint.ts` on the saved record
+when a record is written. Do not describe a survey as complete while a required
+question is open. Verify citations against opened sources and our actual code. Explain conflicts,
 unknowns, incomplete coverage, budget stops and shallow-history limits. Never turn a
 fingerprint/search hit into a defect without reading its use.
 

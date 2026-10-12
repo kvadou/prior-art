@@ -1,5 +1,13 @@
 # Changelog
 
+## 0.8.0, 2026-10-12
+
+- Link research records by ID: `Q` questions written before searching and marked answered/partial/unresolved at the end, an `E` evidence register (replacing the coverage ledger, with an authority column), `D` decisions citing evidence IDs, and `O` obligations per adopted pattern.
+- Obligations close only with a named check at or above the required authority (inspection, unit, integration, end-to-end, production) and a recorded result.
+- Add `bin/record-lint.ts`: fail-closed validation of a record. Failed or skipped retrieval cannot support a decision, a failed search cannot become not-found, closed checks must name existing files. Exit 0 complete, 2 incomplete, 1 invalid. Reads local files only; never runs checks.
+- Add the shipped-products source family for closed incumbents: authorized own-account network captures, desktop bundles and observed sessions as `observed-artifact` evidence, with optional REA tooling. Raw captures stay local.
+- Add a synthetic evidence-ledger example and `npx skills add` installation. Inspired by conventions in morluto/rea; no code copied. No new agent evaluation was run for this release.
+
 ## 0.7.0, 2026-09-26
 
 - Add a compact outcome review connecting research hypotheses to implementation results, corrections and bounded reusable lessons.

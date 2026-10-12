@@ -7,7 +7,14 @@ public implementations, official API contracts, libraries, standards, change
 histories and relevant product or AI research. It turns findings into cited decisions
 and concrete checks for your implementation.
 
-Version **0.7.0** adds an implementation outcome review and complete-job verification. Version 0.6.0 introduced product-experience research for substantial UI work: observed
+Version **0.8.0** links every conclusion to its evidence. Research records now carry
+numbered questions, an evidence register with stable IDs, decisions that cite them and
+obligations that stay open until a check of comparable authority has run. A new
+`record-lint.ts` validates the record, and closed incumbents can be studied through
+authorized shipped-product evidence (see [Evidence ledger](#evidence-ledger)).
+
+Version 0.7.0 added an implementation outcome review and complete-job verification.
+Version 0.6.0 introduced product-experience research for substantial UI work: observed
 flows, annotated visual references, a capability map and a concrete design handoff.
 It preserves the original goal across phased builds and checks the result against
 real tasks. Technical/local-first research, feasibility checks and paired evaluation
@@ -24,7 +31,13 @@ Claude Code plugin:
 
 For an existing plugin installation, refresh this marketplace and update the plugin
 using your Claude Code version's plugin manager. Verify that the installed plugin
-reports 0.6.0; a marketplace refresh alone may leave an older cached installation.
+reports 0.8.0; a marketplace refresh alone may leave an older cached installation.
+
+Any agent supported by the [skills CLI](https://skills.sh):
+
+```sh
+npx skills add https://github.com/kvadou/prior-art --skill prior-art
+```
 
 For a shared local Claude/Codex installation, clone this repo to a stable location
 and point both skill directories at the same source:
@@ -156,6 +169,40 @@ use synthetic data. If access is unavailable, report the gap and use documented
 references without claiming firsthand interaction. A worked example is not proof
 of better outcomes; retain failures and evaluate on held-out tasks.
 
+## Evidence ledger
+
+Every research record links four tables by ID. `Q1` questions are written before
+searching and marked answered, partial or unresolved at the end. `E1` evidence rows
+record each source or search, including failures. `D1` decisions cite evidence IDs.
+`O1` obligations turn adopted patterns into checks that stay open until a check of
+the required authority (inspection, unit, integration, end-to-end, production) has run.
+See the [template](skills/prior-art/references/research-record.md) and a
+[synthetic example](docs/examples/evidence-ledger.md).
+
+```sh
+node "$SKILL/bin/record-lint.ts" docs/prior-art/<record>.md
+node "$SKILL/bin/record-lint.ts" --require-closed --root . docs/prior-art/<record>.md
+```
+
+The linter fails closed. A supported decision must cite evidence that was actually
+read. A failed search can't become not-found. A closed obligation needs a result, a
+named check at or above the required authority and, when the check is a file path,
+a file that exists inside the root (`path#test name` also requires that name inside
+it). Exit `0` complete, `2` valid but incomplete, `1` invalid. Open or failed
+obligations count as incomplete only with `--require-closed`. It reads local files only and never
+runs the named checks, so a closed row still needs the run that produced its result.
+
+## Closed incumbents
+
+When the incumbent is a closed product, its shipped artifacts can answer questions
+its docs don't. Examples are a saved network capture of your own session or an
+extracted desktop bundle. [Shipped products](skills/prior-art/references/shipped-products.md)
+covers authorization, what each source can and cannot establish, and how to record
+it as `observed-artifact` evidence. Inspect only products you are authorized to
+examine and respect their terms. Raw captures stay local. The optional
+[REA](https://github.com/morluto/rea) tool can analyze captures and Electron bundles
+locally when installed; the skill never installs it on its own.
+
 ## Search tools
 
 Run these from the project being researched, using the installed skill's `bin` path:
@@ -208,9 +255,11 @@ Provider limits remain even with pagination; no result count proves consensus.
 - `references/product-experience.md`: observed UI flows and private evidence handling.
 - `references/reference-board.md`: annotated visual/interaction comparisons.
 - `references/design-handoff.md`: capability coverage, concrete design and task checks.
+- `references/shipped-products.md`: authorized evidence from closed products.
 - `references/irreversible-decisions.md`: prompts for expensive decisions.
 - `references/patterns.tsv`: reusable discovery queries, not conclusions.
-- `bin/`: searches plus retained schema coverage and local fingerprint tools.
+- `bin/`: searches, the research-record linter, and retained schema coverage and
+  local fingerprint tools.
 
 Run from this repository root:
 
@@ -231,7 +280,7 @@ supported decisions and prevented defects rather than citation counts.
 
 ## Development pilot
 
-The [four-condition pilot](docs/evals/pilot-2026-09-20/README.md) records12 actual
+The [four-condition pilot](docs/evals/pilot-2026-09-20/README.md) records 12 actual
 model responses on three synthetic tasks. All conditions, including no skill, reached
 the same basic decisions. Two separate Claude routing smokes exercised a substantial
 task and a typo. These are development observations, not proof of superiority.
@@ -260,9 +309,16 @@ of improved agent decisions.
 [search-first](https://github.com/shimo4228/search-first) and
 [prior-art-search](https://github.com/yjhqwer/yjh-discipline) address the same
 research-before-building problem. Their local-first search order, compact verdicts
-and attention to recurring workarounds informed the0.5.0 refinements. We compared
+and attention to recurring workarounds informed the 0.5.0 refinements. We compared
 pinned instruction snapshots in the development pilot above; no superiority claim
 or copied implementation is implied.
+
+[REA](https://github.com/morluto/rea) reverse engineers shipped software and is
+complementary: it covers closed artifacts, while this skill covers public evidence.
+Its conventions informed 0.8.0. Conclusions cite evidence IDs, unknown or partial
+coverage never aggregates to a pass, an investigation is a checklist of questions
+marked at the end, and reconstruction obligations close only with a verifier of
+comparable authority. No REA code is included.
 
 ## Contributing
 

@@ -11,6 +11,13 @@ Research-only work can leave proposed checks pending. Never claim a result not o
 | --- | --- | --- | --- | --- |
 | Keep record context during handoff | Pinned source or labeled static reference | Route/component/contract | Observed sequence with environment and date, or not tested | Retain, adapt, reject, or unresolved |
 
+Update the record's obligations in place: closed with the check, the authority that
+verified it and the result; failed with what happened; waived with the reason. Run
+`bin/record-lint.ts --require-closed` on the record. Exit `2` means something is still
+open: a question, an unknown decision, or an open or failed obligation (or none were
+recorded). Report the listed items rather than calling the build done. The linter checks that named
+test files exist; it does not run them, so cite the run that produced each result.
+
 Record only consequential decisions and surprises. Include failed checks and patterns
 rejected during implementation, not just successes. Separate an upstream observation
 from our design hypothesis and our implementation defect. A local bug does not prove
