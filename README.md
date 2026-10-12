@@ -7,7 +7,9 @@ public implementations, official API contracts, libraries, standards, change
 histories and relevant product or AI research. It turns findings into cited decisions
 and concrete checks for your implementation.
 
-Version **0.8.0** links every conclusion to its evidence. Research records now carry
+Version **0.8.1** keeps the evidence-ledger tables in the saved record and chat
+answers short, after a [three-arm pilot](docs/evals/pilot-2026-10-12/README.md)
+showed 0.8.0 pasting them into concise answers. Version 0.8.0 links every conclusion to its evidence. Research records now carry
 numbered questions, an evidence register with stable IDs, decisions that cite them and
 obligations that stay open until a check of comparable authority has run. A new
 `record-lint.ts` validates the record, and closed incumbents can be studied through
@@ -31,7 +33,7 @@ Claude Code plugin:
 
 For an existing plugin installation, refresh this marketplace and update the plugin
 using your Claude Code version's plugin manager. Verify that the installed plugin
-reports 0.8.0; a marketplace refresh alone may leave an older cached installation.
+reports 0.8.1; a marketplace refresh alone may leave an older cached installation.
 
 Any agent supported by the [skills CLI](https://skills.sh):
 

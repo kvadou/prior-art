@@ -1,5 +1,10 @@
 # Changelog
 
+## 0.8.1, 2026-10-12
+
+- Keep evidence-ledger tables in the saved record. Chat answers stay proportional, cite IDs inline, and don't name the skill's tooling or authority vocabulary unprompted.
+- Motivated by a blind agent-graded three-arm pilot (no skill, 0.7.0, 0.8.0; 12 real Claude runs on 4 held-out synthetic tasks). 0.8.0 passed 23/27 checks vs 26/27 for no skill, losing mainly on pasted record templates and out-of-packet tool vocabulary. No superiority claim; no human grades. This fix is not yet evaluated.
+
 ## 0.8.0, 2026-10-12
 
 - Link research records by ID: `Q` questions written before searching and marked answered/partial/unresolved at the end, an `E` evidence register (replacing the coverage ledger, with an authority column), `D` decisions citing evidence IDs, and `O` obligations per adopted pattern.

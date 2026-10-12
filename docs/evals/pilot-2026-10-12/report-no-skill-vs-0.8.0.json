@@ -1,0 +1,116 @@
+{
+  "schema_version": 1,
+  "synthetic": false,
+  "notice": "Manifest assertions and human judgments only. This tool does not verify run provenance, artifact contents, citations or grading accuracy.",
+  "baseline_revision": "no-skill",
+  "candidate_revision": "5c6ffc6",
+  "summary": {
+    "pairs": 4,
+    "missing_pairs": 0,
+    "conditions_mismatch": 0,
+    "awaiting_human_review": 4,
+    "paired_human_review": 0
+  },
+  "pairs": [
+    {
+      "id": "offline-sync-adapt-vs-build",
+      "status": "awaiting_human_review",
+      "missing_sides": [],
+      "mismatched_conditions": [],
+      "rubric_delta": null,
+      "cost_usd": {
+        "baseline": 0.048147999999999996,
+        "candidate": 0.173584,
+        "delta": 0.125436
+      },
+      "elapsed_seconds": {
+        "baseline": 22.646,
+        "candidate": 23.082,
+        "delta": 0.43599999999999994
+      },
+      "human_reviews": {
+        "baseline": null,
+        "candidate": null
+      },
+      "outputs": {
+        "baseline": "runs.json#offline-sync-adapt-vs-build/no-skill",
+        "candidate": "runs.json#offline-sync-adapt-vs-build/candidate-0.8.0"
+      }
+    },
+    {
+      "id": "shift-swap-closed-competitor",
+      "status": "awaiting_human_review",
+      "missing_sides": [],
+      "mismatched_conditions": [],
+      "rubric_delta": null,
+      "cost_usd": {
+        "baseline": 0.042516,
+        "candidate": 0.0514946,
+        "delta": 0.008978600000000003
+      },
+      "elapsed_seconds": {
+        "baseline": 19.657,
+        "candidate": 22.482,
+        "delta": 2.8249999999999993
+      },
+      "human_reviews": {
+        "baseline": null,
+        "candidate": null
+      },
+      "outputs": {
+        "baseline": "runs.json#shift-swap-closed-competitor/no-skill",
+        "candidate": "runs.json#shift-swap-closed-competitor/candidate-0.8.0"
+      }
+    },
+    {
+      "id": "invoice-sequence-done-claim",
+      "status": "awaiting_human_review",
+      "missing_sides": [],
+      "mismatched_conditions": [],
+      "rubric_delta": null,
+      "cost_usd": {
+        "baseline": 0.039112,
+        "candidate": 0.04901860000000001,
+        "delta": 0.009906600000000008
+      },
+      "elapsed_seconds": {
+        "baseline": 18.62,
+        "candidate": 22.854,
+        "delta": 4.233999999999998
+      },
+      "human_reviews": {
+        "baseline": null,
+        "candidate": null
+      },
+      "outputs": {
+        "baseline": "runs.json#invoice-sequence-done-claim/no-skill",
+        "candidate": "runs.json#invoice-sequence-done-claim/candidate-0.8.0"
+      }
+    },
+    {
+      "id": "empty-state-typo-control",
+      "status": "awaiting_human_review",
+      "missing_sides": [],
+      "mismatched_conditions": [],
+      "rubric_delta": null,
+      "cost_usd": {
+        "baseline": 0.013212,
+        "candidate": 0.017906599999999998,
+        "delta": 0.004694599999999998
+      },
+      "elapsed_seconds": {
+        "baseline": 4.842,
+        "candidate": 7.465,
+        "delta": 2.623
+      },
+      "human_reviews": {
+        "baseline": null,
+        "candidate": null
+      },
+      "outputs": {
+        "baseline": "runs.json#empty-state-typo-control/no-skill",
+        "candidate": "runs.json#empty-state-typo-control/candidate-0.8.0"
+      }
+    }
+  ]
+}

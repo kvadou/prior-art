@@ -1,0 +1,22 @@
+{
+ "offline-sync-adapt-vs-build": {
+  "A": "candidate-0.8.0",
+  "B": "no-skill",
+  "C": "baseline-0.7.0"
+ },
+ "shift-swap-closed-competitor": {
+  "A": "candidate-0.8.0",
+  "B": "no-skill",
+  "C": "baseline-0.7.0"
+ },
+ "invoice-sequence-done-claim": {
+  "A": "no-skill",
+  "B": "baseline-0.7.0",
+  "C": "candidate-0.8.0"
+ },
+ "empty-state-typo-control": {
+  "A": "candidate-0.8.0",
+  "B": "baseline-0.7.0",
+  "C": "no-skill"
+ }
+}

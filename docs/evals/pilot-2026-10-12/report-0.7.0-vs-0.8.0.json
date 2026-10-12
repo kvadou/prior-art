@@ -1,0 +1,116 @@
+{
+  "schema_version": 1,
+  "synthetic": false,
+  "notice": "Manifest assertions and human judgments only. This tool does not verify run provenance, artifact contents, citations or grading accuracy.",
+  "baseline_revision": "7f9e5d8a5",
+  "candidate_revision": "5c6ffc6",
+  "summary": {
+    "pairs": 4,
+    "missing_pairs": 0,
+    "conditions_mismatch": 0,
+    "awaiting_human_review": 4,
+    "paired_human_review": 0
+  },
+  "pairs": [
+    {
+      "id": "offline-sync-adapt-vs-build",
+      "status": "awaiting_human_review",
+      "missing_sides": [],
+      "mismatched_conditions": [],
+      "rubric_delta": null,
+      "cost_usd": {
+        "baseline": 0.15066,
+        "candidate": 0.173584,
+        "delta": 0.022924
+      },
+      "elapsed_seconds": {
+        "baseline": 26.246,
+        "candidate": 23.082,
+        "delta": -3.163999999999998
+      },
+      "human_reviews": {
+        "baseline": null,
+        "candidate": null
+      },
+      "outputs": {
+        "baseline": "runs.json#offline-sync-adapt-vs-build/baseline-0.7.0",
+        "candidate": "runs.json#offline-sync-adapt-vs-build/candidate-0.8.0"
+      }
+    },
+    {
+      "id": "shift-swap-closed-competitor",
+      "status": "awaiting_human_review",
+      "missing_sides": [],
+      "mismatched_conditions": [],
+      "rubric_delta": null,
+      "cost_usd": {
+        "baseline": 0.0404978,
+        "candidate": 0.0514946,
+        "delta": 0.010996800000000001
+      },
+      "elapsed_seconds": {
+        "baseline": 15.486,
+        "candidate": 22.482,
+        "delta": 6.995999999999999
+      },
+      "human_reviews": {
+        "baseline": null,
+        "candidate": null
+      },
+      "outputs": {
+        "baseline": "runs.json#shift-swap-closed-competitor/baseline-0.7.0",
+        "candidate": "runs.json#shift-swap-closed-competitor/candidate-0.8.0"
+      }
+    },
+    {
+      "id": "invoice-sequence-done-claim",
+      "status": "awaiting_human_review",
+      "missing_sides": [],
+      "mismatched_conditions": [],
+      "rubric_delta": null,
+      "cost_usd": {
+        "baseline": 0.047355999999999995,
+        "candidate": 0.04901860000000001,
+        "delta": 0.001662600000000014
+      },
+      "elapsed_seconds": {
+        "baseline": 21.506,
+        "candidate": 22.854,
+        "delta": 1.347999999999999
+      },
+      "human_reviews": {
+        "baseline": null,
+        "candidate": null
+      },
+      "outputs": {
+        "baseline": "runs.json#invoice-sequence-done-claim/baseline-0.7.0",
+        "candidate": "runs.json#invoice-sequence-done-claim/candidate-0.8.0"
+      }
+    },
+    {
+      "id": "empty-state-typo-control",
+      "status": "awaiting_human_review",
+      "missing_sides": [],
+      "mismatched_conditions": [],
+      "rubric_delta": null,
+      "cost_usd": {
+        "baseline": 0.019196,
+        "candidate": 0.017906599999999998,
+        "delta": -0.001289400000000003
+      },
+      "elapsed_seconds": {
+        "baseline": 7.158,
+        "candidate": 7.465,
+        "delta": 0.3069999999999995
+      },
+      "human_reviews": {
+        "baseline": null,
+        "candidate": null
+      },
+      "outputs": {
+        "baseline": "runs.json#empty-state-typo-control/baseline-0.7.0",
+        "candidate": "runs.json#empty-state-typo-control/candidate-0.8.0"
+      }
+    }
+  ]
+}

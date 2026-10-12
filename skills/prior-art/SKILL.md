@@ -175,6 +175,11 @@ confidence; neither a raw count nor a three-source threshold proves correctness.
 Give each source or search an evidence ID (`E1`) and each decision an ID (`D1`) that
 cites them. Failed or partial retrieval never counts as support.
 
+The ID tables belong in the saved record, not the conversational answer. In chat, keep
+the answer proportional to the decision: cite IDs or sources inline and mention open
+questions or obligations in a sentence. Do not paste the record template, and do not
+name this skill's tools or authority vocabulary to a reader who has not asked for them.
+
 Lead with four short items: recommendation, strongest evidence, material limitation,
 and next check. Then provide the foundation/review, coverage, alternatives and detail
 needed to assess the decision. Include KEEP/current approach when an incumbent exists. Each important adopted pattern gets an implementation location or
