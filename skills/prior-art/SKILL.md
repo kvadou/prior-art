@@ -106,6 +106,9 @@ survey. Existing CLI examples:
 bin/prior-art-search.sh -n 25 -s 0 -k 'expense|receipt|reimburse' -S github,gitlab,codeberg 'expense management' 'reimbursement'
 bin/pattern-search.sh -l
 bin/pattern-search.sh -d identity
+bin/package-search.sh recurrence rrule        # dependents across registries
+bin/doc-search.sh rrule                        # current docs (Context7)
+bin/answer-search.sh 'rrule timezone'          # failure modes (Stack Exchange)
 bin/schema-coverage.sh calcom/cal.diy:packages/prisma/schema.prisma
 ```
 

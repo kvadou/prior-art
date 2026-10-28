@@ -1,5 +1,13 @@
 # Changelog
 
+## 0.9.0, 2026-10-28
+
+- Add `package-search.sh`: ecosyste.ms keyword index across package registries, ranked by dependent repositories. Unstable provider paging keeps going, drops repeats and stays partial.
+- Add `prior-art-search.sh -E N`: deps.dev OpenSSF Scorecard for the top N GitHub results; not indexed stays unknown.
+- Add `doc-search.sh`: Context7 library discovery with fetch URLs; references now cover publisher `llms.txt`.
+- Add `answer-search.sh`: vote-sorted Stack Exchange search that stops all remaining calls on backoff, quota exhaustion or throttling, with optional `STACK_EXCHANGE_KEY`.
+- grep.app was evaluated and dropped: its API sits behind a bot checkpoint (HTTP 429). Live probes and decisions are in `docs/plans/2026-10-28-deeper-sources.md`. No new agent evaluation was run for this release.
+
 ## 0.8.1, 2026-10-12
 
 - Keep evidence-ledger tables in the saved record. Chat answers stay proportional, cite IDs inline, and don't name the skill's tooling or authority vocabulary unprompted.

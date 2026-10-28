@@ -12,6 +12,9 @@ The aim is relevant coverage, not exhaustive internet coverage or a source count
 | Official API specifications and versioned reference docs | Public resources, guarantees, lifecycle, error and retry contracts | API shape is an external contract, **not evidence of internal tables, transactions or storage architecture**. |
 | Official SDKs, webhook documentation and fixtures | Client defaults, event ordering, signatures, retries, version compatibility | Separate SDK behavior from server guarantees; inspect pinned SDK and API versions. |
 | Libraries and their tests/issues | Extracted algorithms, domain rules, reusable primitives | Downloads/stars aid discovery, not correctness or independent adoption proof. |
+| Package dependents (ecosyste.ms, deps.dev) | Which implementations other projects actually depend on; maintenance-practice signal (OpenSSF Scorecard) | Dependents measure use, not fit or correctness. Keyword tags are author-chosen; untagged packages are missed. |
+| Current documentation indexes (Context7, publisher `llms.txt`) | Version-specific usage, focused snippets, the publisher's own doc map | Context7 re-indexes publisher docs; confirm version and claims at the versioned publisher page, changelog or SDK source. |
+| Community Q&A (Stack Overflow and other Stack Exchange sites) | Failure modes, workarounds, symptoms people hit in practice | Locates leads only; follow each claim to docs, source or an issue. Vote order skews old; check dates against current versions. CC BY-SA: attribute when quoting. |
 | Standards and specifications | Normative requirements, interoperability, terminology | Record edition and applicability. Distinguish MUST/SHOULD, examples, drafts and local extensions; a standard is not automatically our product model. |
 | Introducing/fixing PRs, issues, design discussions, release notes | Why a rule exists, regressions, rejected approaches | Distinguish proposal, reproduction, maintainer conclusion and released fix. Confirm against the relevant version. |
 | First-party incident reports and engineering writeups | Failure mechanisms, scale limits, migrations, operational costs | Published context can differ from ours; verify dates and follow-up changes. |
@@ -79,6 +82,18 @@ implementation. Open the applicable current/versioned source and follow its own 
 | AI / data | Original papers and linked artifacts; model/dataset cards; official evaluation suites | Baselines, leakage, task fit, reproducibility, cost/latency and limitations |
 
 Discovery entry points:
+- `bin/package-search.sh KEYWORD...`: ecosyste.ms keyword index across npm, PyPI,
+  Packagist, crates.io, RubyGems, Maven, NuGet and more, ordered by dependent repos
+  among retrieved pages. Free-text search endpoints returned 404 when probed
+  (2026-10-28); try several domain keywords.
+- `bin/prior-art-search.sh -E N`: add deps.dev OpenSSF Scorecard (0-10) for the top
+  N GitHub results. Not indexed means unknown, not low.
+- `bin/doc-search.sh LIBRARY...`: Context7 library IDs with trust, snippet counts and a
+  fetch URL; append `&topic=<topic>` for focused snippets. Prefer a Context7 MCP tool
+  when the runtime has one. Also try `https://<docs-domain>/llms.txt`.
+- `bin/answer-search.sh -S stackoverflow,serverfault QUERY...`: vote-sorted questions.
+  Anonymous quota is 300 requests/day; `STACK_EXCHANGE_KEY` (a public app key, not a
+  secret) raises it. Issues and discussions on the library itself are often fresher.
 - [GitHub search API](https://docs.github.com/en/rest/search/search): inspect limits,
   pagination and incomplete results, not just retrieved matches.
 - [APIs.guru directory](https://api.apis.guru/v2/list.json): locate specs, then verify

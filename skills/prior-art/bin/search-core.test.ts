@@ -1,6 +1,6 @@
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
-import { searchPages, sourcegraph, parseSourcegraph, rank, licenseClass, overall } from './search-core.ts';
+import { searchPages, sourcegraph, parseSourcegraph, rank, licenseClass, overall, packages, answers, docs, enrich } from './search-core.ts';
 import type { Transport, Reply } from './search-core.ts';
 const bounds={pages:3,retries:0,timeoutMs:10};
 const repo=(n=0)=>({full_name:`owner/r${n}`,html_url:`https://github.com/owner/r${n}`,stargazers_count:n,forks_count:0,description:'expense receipts',topics:[],license:{spdx_id:'MIT'},pushed_at:'2026-09-01T00:00:00Z'});
@@ -80,3 +80,55 @@ test('GitHub public scope is enforced and private results discarded',async()=>{
 test('legacy GitHub code query avoids unsupported public qualifier and filters visibility',async()=>{
  const r=await searchPages('github','money filename:schema.prisma','code',bounds,async request=>{assert.ok(!request.url.includes('is%3Apublic'));return ok({items:[{repository:{full_name:'o/public',private:false},path:'schema.prisma'},{repository:{full_name:'o/SECRET',private:true},path:'private.ts'}],total_count:2});});assert.equal(r.coverage.status,'partial');assert.equal(r.rows.length,1);assert.equal(r.rows[0].repo,'o/public');assert.ok(!JSON.stringify(r).includes('SECRET'));
 });
+const pkg=(n=0)=>({name:`p${n}`,ecosystem:'npm',dependent_repos_count:n,normalized_licenses:['MIT'],repository_url:`https://github.com/o/p${n}`});
+const next='<https://packages.ecosyste.ms/api/v1/keywords/x?page=2>; rel="next"';
+test('packages follow Link pagination to completion and keep unknown counts unknown',async()=>{
+ const r=await packages('Recurrence',bounds,sequence([ok({packages:[pkg(1),{name:'q',ecosystem:'pypi'}]},{link:next}),ok({packages:[pkg(2)]},{link:'<x>; rel="first"'})]));
+ assert.equal(r.coverage.status,'complete');assert.equal(r.coverage.pages,2);assert.equal(r.rows.length,3);assert.equal(r.rows[1].dependent_repos,null);assert.equal(r.rows[0].license,'MIT');
+});
+test('packages budget, 404 and malformed bodies are never complete',async()=>{
+ const budget=await packages('x',{...bounds,pages:1},sequence([ok({packages:[pkg()]},{link:next})]));assert.equal(budget.coverage.status,'partial');assert.match(budget.coverage.error!,/budget/);
+ const missing=await packages('x',bounds,sequence([{status:404,body:'{"error":"not found"}',headers:{}}]));assert.equal(missing.coverage.status,'failed');assert.match(missing.coverage.error!,/not evidence of absence/);
+ for(const body of [{packages:'x'},{packages:[{name:'a'}]},{error:'x'}]){const r=await packages('x',bounds,sequence([ok(body)]));assert.equal(r.coverage.status,'failed');}
+ const short=await packages('x',bounds,sequence([ok({packages:[pkg()]}),ok({packages:[]})]));assert.equal(short.coverage.pages,2);assert.equal(short.coverage.status,'complete');
+ const full=await packages('x',bounds,sequence([ok({packages:Array.from({length:100},(_,i)=>pkg(i))}),ok({packages:[]})]));assert.equal(full.coverage.status,'complete');assert.equal(full.coverage.pages,2);
+ const empty=await packages(' ',bounds,async()=>{throw Error('must not fetch');});assert.equal(empty.coverage.status,'skipped');
+});
+const question=(id:number)=>({question_id:id,link:`https://stackoverflow.com/q/${id}`,title:'DST &amp; &#39;rrule&#39;',score:5,answer_count:2,accepted_answer_id:9,tags:['rrule'],last_activity_date:1374530000,content_license:'CC BY-SA 3.0'});
+test('answers complete on has_more false and decode titles',async()=>{
+ const r=await answers('rrule','stackoverflow',bounds,sequence([ok({items:[question(1)],has_more:true}),ok({items:[question(2)],has_more:false})]),'');
+ assert.equal(r.coverage.status,'complete');assert.equal(r.rows.length,2);assert.equal(r.rows[0].title,"DST & 'rrule'");assert.equal(r.rows[0].accepted,true);assert.equal(r.rows[0].last_activity,'2013-07-22');
+});
+test('answers backoff, quota, provider errors and missing has_more are not complete',async()=>{
+ const back=await answers('x','stackoverflow',bounds,sequence([ok({items:[question(1)],has_more:true,backoff:10})]),'');assert.equal(back.coverage.status,'partial');assert.match(back.coverage.error!,/backoff/);
+ const quota=await answers('x','stackoverflow',bounds,sequence([ok({items:[question(1)],has_more:true,quota_remaining:0})]),'');assert.match(quota.coverage.error!,/quota/);
+ const throttled=await answers('x','stackoverflow',bounds,sequence([{status:400,body:'{"error_id":502}',headers:{}}]),'');assert.equal(throttled.coverage.status,'failed');
+ const errBody=await answers('x','stackoverflow',bounds,sequence([ok({error_id:403,error_name:'access_denied'})]),'');assert.equal(errBody.coverage.status,'failed');
+ const schema=await answers('x','stackoverflow',bounds,sequence([ok({items:[question(1)]})]),'');assert.equal(schema.coverage.status,'failed');
+});
+test('answers key is sent only when provided',async()=>{
+ await answers('x','stackoverflow',bounds,async req=>{assert.ok(req.url.includes('key=public'));return ok({items:[],has_more:false});},'public');
+ await answers('x','stackoverflow',bounds,async req=>{assert.ok(!req.url.includes('key='));return ok({items:[],has_more:false});},'');
+});
+test('docs read one ranked page and reject malformed ids',async()=>{
+ const r=await docs('rrule',bounds,sequence([ok({results:[{id:'/jkbrzt/rrule',title:'RRule.js',trustScore:9,totalSnippets:40,lastUpdateDate:'2026-06-24T02:36:28Z'}]})]));
+ assert.equal(r.coverage.status,'partial');assert.equal(r.coverage.total,null);assert.equal(r.rows[0].fetch,'https://context7.com/api/v1/jkbrzt/rrule?type=txt&tokens=5000');assert.equal(r.rows[0].updated,'2026-06-24');
+ for(const body of [{results:[{id:'no-slash'}]},{results:null},{}]){const bad=await docs('x',bounds,sequence([ok(body)]));assert.equal(bad.coverage.status,'failed');}
+ const down=await docs('x',bounds,sequence([{status:503,body:'',headers:{}}]));assert.equal(down.coverage.status,'failed');assert.equal(down.coverage.incomplete,true);
+});
+test('deps.dev enrichment: 404 is unknown, failures are partial, non-GitHub rows skipped',async()=>{
+ const rows=[{full_name:'o/a',host:'github'},{full_name:'o/b',host:'gitlab'},{full_name:'o/c',host:'github.com'}];
+ const c=await enrich(rows,5,bounds,async req=>req.url.endsWith('o%2Fa')?ok({projectKey:{id:'github.com/o/a'},scorecard:{overallScore:6.2}}):{status:404,body:'',headers:{}});
+ assert.equal(c!.status,'complete');assert.equal(rows[0].scorecard,6.2);assert.equal(rows[2].scorecard,null);assert.equal((rows[1] as any).scorecard,undefined);
+ const fail=await enrich([{full_name:'o/a',host:'github'},{full_name:'o/c',host:'github'}],5,bounds,sequence([ok({projectKey:{id:'x'}}),{status:500,body:'',headers:{}}]));assert.equal(fail!.status,'partial');
+ assert.equal(await enrich([{full_name:'o/b',host:'gitlab'}],5,bounds,async()=>{throw Error('must not fetch');}),null);
+});
+test('packages keep paging past unstable order but never claim complete',async()=>{
+ const r=await packages('x',bounds,sequence([ok({packages:[pkg(1),pkg(2)]},{link:next}),ok({packages:[pkg(2),pkg(3)]},{link:'<x>; rel="first"'})]));
+ assert.equal(r.coverage.pages,2);assert.equal(r.rows.length,3);assert.equal(r.coverage.status,'partial');assert.match(r.coverage.error!,/unstable/);
+});
+test('malformed dates become unknown instead of crashing',async()=>{
+ const a=await answers('x','stackoverflow',bounds,sequence([ok({items:[{...question(1),last_activity_date:1e20,creation_date:'x'}],has_more:false})]),'');assert.equal(a.rows[0].last_activity,null);assert.equal(a.rows[0].created,null);
+ const p=await packages('x',bounds,sequence([ok({packages:[{...pkg(),latest_release_published_at:5}]},{link:'<x>; rel="first"'})]));assert.equal(p.rows[0].latest_release,null);
+});
+test('failed scorecard lookups render unknown, not unenriched',async()=>{const rows:any[]=[{full_name:'o/a',host:'github'}];await enrich(rows,1,bounds,sequence([{status:500,body:'',headers:{}}]));assert.equal(rows[0].scorecard,null);});

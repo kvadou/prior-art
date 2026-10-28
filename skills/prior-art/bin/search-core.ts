@@ -142,3 +142,105 @@ export async function sourcegraph(query:string,bounds:Bounds,fetcher:Transport=t
  return {rows:parsed.rows,coverage};
 }
 export function overall(coverage:Coverage[]){return coverage.every(c=>c.status==='complete')?'complete':coverage.some(c=>c.status==='complete'||c.status==='partial')?'partial':'failed';}
+const num=(v:unknown)=>typeof v==='number'&&Number.isFinite(v)&&v>=0?v:null;
+const nextLink=(link?:string)=>/<[^>]+>;\s*rel=["']?next["']?/i.test(link??'');
+const fresh=(provider:string,query:string):Coverage=>({provider,query,status:'failed',pages:0,total:null,incomplete:false,retrieved:0,error:null});
+function settle(coverage:Coverage,done:boolean):Coverage{
+ if(!done&&!coverage.error) coverage.error='Pagination budget reached';
+ coverage.incomplete ||= !done || !!coverage.error;
+ coverage.status=coverage.pages===0?'failed':done&&!coverage.incomplete?'complete':'partial';
+ return coverage;
+}
+const failure=(r:Reply)=>r.error||r.status<200||r.status>=300?(r.error??`HTTP ${r.status}`):null;
+const entity:Record<string,string>={quot:'"','#39':"'",amp:'&',lt:'<',gt:'>'};
+const day=(s:unknown)=>{const d=new Date(typeof s==='number'?s*1000:NaN);return Number.isNaN(d.getTime())?null:d.toISOString().slice(0,10);};
+
+// ecosyste.ms keyword index across registries. Dependents measure use; stars do not.
+export async function packages(keyword:string,bounds:Bounds,fetcher:Transport=transport):Promise<{rows:Row[];coverage:Coverage}>{
+ const coverage=fresh('ecosyste.ms',keyword);const rows:Row[]=[];const seen=new Set<string>();let done=false,unstable=false;
+ const kw=keyword.trim().toLowerCase();
+ if(!kw){coverage.status='skipped';coverage.error='Empty keyword';return {rows,coverage};}
+ for(let page=1;page<=bounds.pages;page++){
+  const response=await request({provider:'ecosyste.ms',url:`https://packages.ecosyste.ms/api/v1/keywords/${encodeURIComponent(kw)}?${new URLSearchParams({per_page:'100',page:String(page)})}`,timeoutMs:bounds.timeoutMs},bounds,fetcher);
+  const err=failure(response);if(err){coverage.error=response.status===404&&page===1?'HTTP 404 (keyword not indexed; not evidence of absence)':err;break;}
+  let body:any;try{body=JSON.parse(response.body);}catch{coverage.error='Invalid JSON response';break;}
+  const items=body?.packages;
+  if(!Array.isArray(items)||items.some((p:any)=>!p||typeof p!=='object'||typeof p.name!=='string'||typeof p.ecosystem!=='string')){coverage.error='Unexpected provider response schema';break;}
+  coverage.pages++;coverage.retrieved+=items.length;
+  for(const p of items){
+   const key=`${p.ecosystem}/${p.name}`.toLowerCase();if(seen.has(key)){unstable=true;continue;}seen.add(key);
+   rows.push({name:p.name,ecosystem:p.ecosystem,description:p.description??null,repo:p.repository_url??null,registry_url:p.registry_url??null,
+    dependent_repos:num(p.dependent_repos_count),dependent_packages:num(p.dependent_packages_count),downloads:num(p.downloads),downloads_period:p.downloads_period??null,
+    latest_release:typeof p.latest_release_published_at==='string'?p.latest_release_published_at.slice(0,10):null,license:Array.isArray(p.normalized_licenses)&&p.normalized_licenses.length?p.normalized_licenses.join(' OR '):p.licenses??'unknown',status:p.status??null});
+  }
+  // Without a Link header, only an empty page proves the end.
+  done=items.length===0||('link' in response.headers&&!nextLink(response.headers.link));
+  if(done) break;
+ }
+ // Provider page order is not stable: keep paging, but a repeat means another row may have been skipped.
+ if(unstable&&!coverage.error) coverage.error='Duplicate results across pages; unstable provider order may have skipped rows';
+ return {rows,coverage:settle(coverage,done)};
+}
+
+// Stack Exchange search, vote-sorted. Anonymous quota is 300/day; STACK_EXCHANGE_KEY (a public app key) raises it.
+export async function answers(query:string,site:string,bounds:Bounds,fetcher:Transport=transport,key=process.env.STACK_EXCHANGE_KEY):Promise<{rows:Row[];coverage:Coverage}>{
+ const coverage=fresh(site,query);const rows:Row[]=[];const seen=new Set<number>();let done=false;
+ if(!query.trim()){coverage.status='skipped';coverage.error='Empty query';return {rows,coverage};}
+ for(let page=1;page<=bounds.pages;page++){
+  const params=new URLSearchParams({q:query,site,order:'desc',sort:'votes',pagesize:'100',page:String(page),...(key?{key}:{})});
+  const response=await request({provider:'stackexchange',url:`https://api.stackexchange.com/2.3/search/advanced?${params}`,timeoutMs:bounds.timeoutMs},bounds,fetcher);
+  const err=failure(response);if(err){coverage.error=err;break;}
+  let body:any;try{body=JSON.parse(response.body);}catch{coverage.error='Invalid JSON response';break;}
+  if(typeof body?.error_id==='number'){coverage.error=`Provider error ${body.error_id}`;break;}
+  const items=body?.items;
+  if(!Array.isArray(items)||typeof body.has_more!=='boolean'||items.some((q:any)=>!q||typeof q!=='object'||typeof q.question_id!=='number'||typeof q.link!=='string'||typeof q.title!=='string')){coverage.error='Unexpected provider response schema';break;}
+  coverage.pages++;coverage.retrieved+=items.length;
+  let duplicate=false;
+  for(const q of items){
+   if(seen.has(q.question_id))duplicate=true;seen.add(q.question_id);
+   rows.push({title:q.title.replace(/&(quot|#39|amp|lt|gt);/g,(_:string,e:string)=>entity[e]),link:q.link,site,score:typeof q.score==='number'?q.score:null,answers:num(q.answer_count),
+    accepted:typeof q.accepted_answer_id==='number',tags:Array.isArray(q.tags)?q.tags:[],last_activity:day(q.last_activity_date),created:day(q.creation_date),license:q.content_license??'unknown'});
+  }
+  if(duplicate){coverage.error='Duplicate results across pages; search sample is unstable';break;}
+  done=!body.has_more;
+  if(done) break;
+  if(typeof body.backoff==='number'){coverage.error=`Provider requested ${body.backoff}s backoff`;break;}
+  if(body.quota_remaining===0){coverage.error='Daily quota exhausted (set STACK_EXCHANGE_KEY)';break;}
+ }
+ return {rows,coverage:settle(coverage,done)};
+}
+
+// Context7 library discovery: one capped, relevance-ranked page with no total, so never complete.
+export async function docs(query:string,bounds:Bounds,fetcher:Transport=transport):Promise<{rows:Row[];coverage:Coverage}>{
+ const coverage=fresh('context7',query);coverage.incomplete=true;const rows:Row[]=[];
+ if(!query.trim()){coverage.status='skipped';coverage.error='Empty query';return {rows,coverage};}
+ const response=await request({provider:'context7',url:`https://context7.com/api/v1/search?${new URLSearchParams({query:query.trim()})}`,timeoutMs:bounds.timeoutMs},bounds,fetcher);
+ const err=failure(response);if(err){coverage.error=err;return {rows,coverage};}
+ let body:any;try{body=JSON.parse(response.body);}catch{coverage.error='Invalid JSON response';return {rows,coverage};}
+ const items=body?.results;
+ if(!Array.isArray(items)||items.some((r:any)=>!r||typeof r!=='object'||typeof r.id!=='string'||!r.id.startsWith('/'))){coverage.error='Unexpected provider response schema';return {rows,coverage};}
+ coverage.pages=1;coverage.retrieved=items.length;coverage.status='partial';coverage.incomplete=true;coverage.error='Ranked top results only; provider reports no total';
+ rows.push(...items.map((r:any)=>({id:r.id,title:r.title??r.id,description:r.description??null,trust:num(r.trustScore),snippets:num(r.totalSnippets),updated:typeof r.lastUpdateDate==='string'?r.lastUpdateDate.slice(0,10):null,
+  fetch:`https://context7.com/api/v1${r.id.split('/').map(encodeURIComponent).join('/')}?type=txt&tokens=5000`})));
+ return {rows,coverage};
+}
+
+// deps.dev project lookup for the top GitHub rows: OpenSSF Scorecard as a maintenance-practice signal.
+export async function enrich(rows:Row[],n:number,bounds:Bounds,fetcher:Transport=transport):Promise<Coverage|null>{
+ const targets=rows.filter(r=>hostName(r.host)==='github.com').slice(0,n);
+ if(!targets.length) return null;
+ const coverage=fresh('deps.dev',`scorecard: top ${targets.length} GitHub repos`);let failed=0;
+ for(const r of targets){
+  const response=await request({provider:'deps.dev',url:`https://api.deps.dev/v3/projects/${encodeURIComponent(`github.com/${r.full_name}`)}`,timeoutMs:bounds.timeoutMs},bounds,fetcher);
+  coverage.pages++;
+  if(response.status===404){r.scorecard=null;coverage.retrieved++;continue;} // not indexed: unknown, not a failure
+  r.scorecard=null; // unknown unless the lookup succeeds
+  if(failure(response)){failed++;continue;}
+  let body:any;try{body=JSON.parse(response.body);}catch{failed++;continue;}
+  if(typeof body?.projectKey?.id!=='string'){failed++;continue;}
+  const s=body.scorecard?.overallScore;r.scorecard=typeof s==='number'&&s>=0&&s<=10?s:null;coverage.retrieved++;
+ }
+ coverage.total=targets.length;coverage.incomplete=failed>0;coverage.error=failed?`${failed} lookups failed; scorecard unknown for those rows`:null;
+ coverage.status=failed===targets.length?'failed':failed?'partial':'complete';
+ return coverage;
+}

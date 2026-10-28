@@ -7,8 +7,10 @@ public implementations, official API contracts, libraries, standards, change
 histories and relevant product or AI research. It turns findings into cited decisions
 and concrete checks for your implementation.
 
-Version **0.8.1** keeps the evidence-ledger tables in the saved record and chat
-answers short, after a [three-arm pilot](docs/evals/pilot-2026-10-12/README.md)
+Version **0.9.0** adds discovery beyond star-ranked repositories: package dependents
+across registries (ecosyste.ms), OpenSSF Scorecard enrichment (deps.dev), current
+documentation (Context7) and community failure modes (Stack Exchange). Version 0.8.1
+keeps the evidence-ledger tables in the saved record and chat answers short, after a [three-arm pilot](docs/evals/pilot-2026-10-12/README.md)
 showed 0.8.0 pasting them into concise answers. Version 0.8.0 links every conclusion to its evidence. Research records now carry
 numbered questions, an evidence register with stable IDs, decisions that cite them and
 obligations that stay open until a check of comparable authority has run. A new
@@ -216,6 +218,9 @@ SKILL="$HOME/.agents/skills/prior-art"
 "$SKILL/bin/pattern-search.sh" -l
 "$SKILL/bin/pattern-search.sh" -d identity
 "$SKILL/bin/pattern-search.sh" -q 'reimbursement currency' -e github
+"$SKILL/bin/package-search.sh" recurrence rrule
+"$SKILL/bin/doc-search.sh" rrule
+"$SKILL/bin/answer-search.sh" -S stackoverflow 'rrule timezone'
 "$SKILL/bin/extract-model.sh"
 "$SKILL/bin/schema-coverage.sh" calcom/cal.diy:packages/prisma/schema.prisma
 ```
@@ -225,6 +230,20 @@ terms, `-S` providers and `-o` output directory. Pattern discovery preserves nam
 `-l`, `-d`, `-q`, `-e`, `-n`, and `-o`. Both searches add `-p` maximum pages,
 `-t` timeout seconds, and `-r` retries. Defaults: three pages, 15 seconds, two retries.
 Use a zero star floor for broad discovery; narrow intentionally when needed.
+Repository discovery also takes `-E N` (at most 25) to add a deps.dev OpenSSF Scorecard
+column for the top N GitHub results. Failed lookups show `unknown` and make overall
+coverage partial even when repository retrieval was complete.
+
+Package discovery (`package-search.sh`) reads the ecosyste.ms keyword index and ranks
+by dependent repositories among the retrieved pages. Its page order is unstable, so
+repeated rows are dropped and coverage is marked partial rather than complete; a page
+without a `Link` header needs an empty page to prove the end. Documentation discovery
+(`doc-search.sh`) lists Context7 libraries with a fetch URL; the provider returns a
+capped ranked list with no total, so its coverage is always partial. Answer discovery
+(`answer-search.sh`, `-S` sites, default `stackoverflow`) is vote-sorted; provider backoff,
+quota exhaustion or throttling stops all remaining calls, which are recorded as skipped; set `STACK_EXCHANGE_KEY` for the higher quota. These modes
+take `-n`, `-o`, `-t`, `-r`, and (except docs) `-p`. Behind an HTTP proxy, recent Node
+releases need `NODE_USE_ENV_PROXY=1` for `fetch` to use it.
 
 Outputs include a Markdown report, JSON results, and coverage JSON. Coverage records
 query/provider status, pages, retrieved count, reported total/incompleteness and
